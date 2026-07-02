@@ -190,7 +190,7 @@ Para otimizar as consultas mais frequentes, estão previstos índices na tabela 
 
 - Uma apólice é criada sempre com status `Ativa`.
 - **Cancelamento**: uma apólice `Ativa` pode ser cancelada manualmente via `PATCH /api/apolices/{id}/cancelar`. Apólices já `Canceladas` ou `Expiradas` não podem ser canceladas novamente.
-- **Expiração**: uma apólice `Ativa` é automaticamente marcada como `Expirada` quando sua `DataFim` é ultrapassada. Essa verificação roda em segundo plano, através de um job (`ExpirarApolicesJob`) executado a cada 24 horas - não depende de nenhuma ação manual do usuário.
+- **Expiração**: uma apólice `Ativa` é automaticamente marcada como `Expirada` quando sua `DataFim` é ultrapassada. Essa verificação roda em segundo plano, através de um job (`ExpirarApolicesJob`) executado a cada 1 minuto horas - em produção 24 horas seria o ideal.
 - Uma vez `Cancelada` ou `Expirada`, uma apólice não pode retornar ao status `Ativa`.
 
 ---

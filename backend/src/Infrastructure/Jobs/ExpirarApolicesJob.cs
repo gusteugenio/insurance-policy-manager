@@ -11,7 +11,7 @@ public class ExpirarApolicesJob : BackgroundService
 {
   private readonly IServiceProvider _serviceProvider;
   private readonly ILogger<ExpirarApolicesJob> _logger;
-  private static readonly TimeSpan Intervalo = TimeSpan.FromHours(24);
+  private static readonly TimeSpan Intervalo = TimeSpan.FromMinutes(1);
 
   public ExpirarApolicesJob(IServiceProvider serviceProvider, ILogger<ExpirarApolicesJob> logger)
   {
