@@ -1,7 +1,13 @@
+using InsurancePolicyManager.Application.Interfaces;
+using InsurancePolicyManager.Application.Services;
 using InsurancePolicyManager.Domain.Interfaces;
+using InsurancePolicyManager.Infrastructure.Repositories;
 using InsurancePolicyManager.Infrastructure.Persistence;
 using InsurancePolicyManager.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using InsurancePolicyManager.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +22,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
     
 builder.Services.AddScoped<IPolicyNumberGenerator, PolicyNumberGenerator>();
+builder.Services.AddScoped<IApoliceRepository, ApoliceRepository>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IApoliceService, ApoliceService>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddValidatorsFromAssemblyContaining<CriarApoliceValidator>();
+builder.Services.AddFluentValidationAutoValidation();
 
 var app = builder.Build();
 
