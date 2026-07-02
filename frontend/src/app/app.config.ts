@@ -1,6 +1,8 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -14,6 +16,8 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(
       withInterceptors([baseUrlInterceptor, errorInterceptor])
-    )
+    ),
+    provideNativeDateAdapter(),
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }
   ]
 };

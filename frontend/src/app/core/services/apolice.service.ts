@@ -1,7 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { ApiResponse, PagedResult } from '../models/api-response.model';
 import {
   Apolice,
@@ -12,7 +11,7 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class ApoliceService {
-  private readonly baseUrl = `${environment.apiUrl}/apolices`;
+  private readonly baseUrl = '/apolices';
 
   constructor(private http: HttpClient) {}
 

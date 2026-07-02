@@ -1,13 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { ApiResponse, PagedResult } from '../models/api-response.model';
 import { Cliente } from '../models/cliente.model';
 
 @Injectable({ providedIn: 'root' })
 export class ClienteService {
-  private readonly baseUrl = `${environment.apiUrl}/clientes`;
+  private readonly baseUrl = '/clientes';
 
   constructor(private http: HttpClient) {}
 
