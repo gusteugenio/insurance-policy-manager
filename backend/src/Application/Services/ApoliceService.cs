@@ -54,13 +54,13 @@ public class ApoliceService : IApoliceService
     return MapearParaDto(apolice!);
   }
 
-  public async Task<PagedResult<ApoliceDto>> ListarAsync(int pagina, int tamanhoPagina, string? status, string? ordenarPor, CancellationToken cancellationToken = default)
+  public async Task<PagedResult<ApoliceDto>> ListarAsync(int pagina, int tamanhoPagina, string? status, Guid? clienteId, string? ordenarPor, CancellationToken cancellationToken = default)
   {
     StatusApolice? statusEnum = null;
     if (!string.IsNullOrWhiteSpace(status) && Enum.TryParse<StatusApolice>(status, true, out var parsed))
       statusEnum = parsed;
 
-    var (itens, total) = await _apoliceRepository.ListarAsync(pagina, tamanhoPagina, statusEnum, ordenarPor, cancellationToken);
+    var (itens, total) = await _apoliceRepository.ListarAsync(pagina, tamanhoPagina, statusEnum, clienteId, ordenarPor, cancellationToken);
 
     return new PagedResult<ApoliceDto>
     {

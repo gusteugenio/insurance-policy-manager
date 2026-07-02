@@ -18,16 +18,20 @@ public class ApoliceRepository : IApoliceRepository
             .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
 
     public async Task<(IEnumerable<Apolice> Itens, int Total)> ListarAsync(
-        int pagina, int tamanhoPagina, StatusApolice? status, string? ordenarPor,
+        int pagina, int tamanhoPagina, StatusApolice? status, Guid? clienteId, string? ordenarPor,
         CancellationToken cancellationToken = default)
-    {
+        {
         var query = _context.Apolices.Include(a => a.Cliente).AsQueryable();
 
         if (status.HasValue)
             query = query.Where(a => a.Status == status.Value);
 
+        if (clienteId.HasValue)
+            query = query.Where(a => a.ClienteId == clienteId.Value);
+
         query = ordenarPor?.ToLower() switch
         {
+            "datainicio" => query.OrderBy(a => a.DataInicio),
             "datafim" => query.OrderBy(a => a.DataFim),
             "valorpremio" => query.OrderBy(a => a.ValorPremio),
             _ => query.OrderByDescending(a => a.DataInicio)
