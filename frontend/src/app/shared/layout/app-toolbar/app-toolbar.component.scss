@@ -1,0 +1,28 @@
+@use '../../../../styles/variables' as v;
+
+.toolbar {
+  background: v.$color-primary;
+  color: #ffffff;
+
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  mat-icon {
+    color: #fff;
+  }
+
+  &__brand {
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  &__spacer {
+    flex: 1 1 auto;
+  }
+}
+
+a {
+  color: #ffffff;
+}
