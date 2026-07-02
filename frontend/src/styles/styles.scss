@@ -1,0 +1,50 @@
+@use './variables' as v;
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background-color: v.$color-surface;
+  color: v.$color-text-primary;
+}
+
+.page-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.card-elevated {
+  background: v.$color-background;
+  border-radius: v.$radius-md;
+  box-shadow: v.$shadow-card;
+  border: 1px solid v.$color-border;
+}
+
+.status-chip {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+
+  &.status-ativa {
+    background: #e6f4ea;
+    color: v.$color-success;
+  }
+
+  &.status-cancelada {
+    background: #fdeceb;
+    color: v.$color-danger;
+  }
+
+  &.status-expirada {
+    background: #f1f1f1;
+    color: v.$color-text-secondary;
+  }
+}
