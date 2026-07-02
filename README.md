@@ -199,6 +199,7 @@ Para otimizar as consultas mais frequentes, estão previstos índices na tabela 
 - **Correlation ID**: cada requisição recebe um identificador único, propagado nos logs, o que facilita o rastreamento de um fluxo específico durante a depuração.
 - **Geração do número da apólice e transição de status**: implementadas como regra de negócio na camada `Application`/`Domain`, e não na camada de apresentação, para permitir testes isolados dessas regras.
 - **Nomenclatura de endpoints de filtro**: a consulta de apólices próximas do vencimento usa um sub-recurso com query parameter (`/api/apolices/vencimento-proximo?dias=30`) em vez de um valor fixo no path, mantendo a rota alinhada às convenções REST e o período configurável.
+- **Persistência via volume Docker**: como o SQLite é um banco baseado em arquivo (não um processo cliente-servidor), ele não aparece como um serviço próprio no `docker-compose.yml`. Em vez disso, o arquivo `.db` é persistido através de um volume Docker montado no container da Api, evitando perda de dados entre reinicializações.
 
 ---
 
@@ -303,18 +304,18 @@ Além deste README, o projeto conta com documentação complementar:
 A seguir, um checklist organizado por blocos de trabalho, utilizado como referência ao longo do desenvolvimento.
 
 ### Setup e infraestrutura inicial
-- [ ] Estrutura de solução (.NET) com camadas Api, Application, Domain, Infrastructure
-- [ ] Configuração do Docker Compose (API + Front + Banco)
-- [ ] Configuração do SQLite e EF Core
+- [x] Estrutura de solução (.NET) com camadas Api, Application, Domain, Infrastructure
+- [x] Configuração do Docker Compose (API + Front + Banco)
+- [x] Configuração do SQLite e EF Core
 
 ### Domínio e persistência
-- [ ] Entidade Cliente
-- [ ] Entidade Apólice e enum de Status
-- [ ] Relacionamento Cliente 1:N Apólice
-- [ ] Índices em `Status`, `DataFim` e `ClienteId`/documento
-- [ ] Gerador de número da apólice (`SEG-YYYY-XXXX`)
-- [ ] Regras de transição de status
-- [ ] Migrations e seed de dados iniciais
+- [x] Entidade Cliente
+- [x] Entidade Apólice e enum de Status
+- [x] Relacionamento Cliente 1:N Apólice
+- [x] Índices em `Status`, `DataFim` e `ClienteId`/documento
+- [x] Gerador de número da apólice (`SEG-YYYY-XXXX`)
+- [x] Regras de transição de status
+- [x] Migrations e seed de dados iniciais
 
 ### CRUD e API
 - [ ] Endpoint de criação de apólice (com resolução automática de cliente)
