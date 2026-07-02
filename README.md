@@ -327,9 +327,9 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 - [x] Consulta de apólices vencendo em 30 dias (SQL + LINQ)
 
 ### Validações e tratamento de erros
-- [ ] FluentValidation (CPF/CNPJ, placa, datas, valor)
-- [ ] Middleware global de exceções
-- [ ] Padronização de respostas da API
+- [x] FluentValidation (CPF/CNPJ, placa, datas, valor)
+- [x] Middleware global de exceções
+- [x] Padronização de respostas da API
 
 ### Observabilidade e qualidade
 - [ ] Logs estruturados com ILogger
