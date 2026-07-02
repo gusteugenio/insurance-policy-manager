@@ -33,7 +33,9 @@ using (var scope = app.Services.CreateScope())
     SeedData.Seed(db);
 }
 
-app.UseHttpsRedirection();
+// HTTPS redirection desabilitado propositalmente: a aplicação roda via Docker em HTTP,
+// sem necessidade de certificado SSL para o escopo deste projeto.
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
