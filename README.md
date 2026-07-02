@@ -332,10 +332,10 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 - [x] Padronização de respostas da API
 
 ### Observabilidade e qualidade
-- [ ] Logs estruturados com ILogger
-- [ ] Correlation ID Middleware
-- [ ] Health Check (`/health`)
-- [ ] Documentação Swagger
+- [x] Logs estruturados com ILogger
+- [x] Correlation ID Middleware
+- [x] Health Check (`/health`)
+- [x] Documentação Swagger
 
 ### Testes
 - [ ] Testes unitários da geração do número da apólice
