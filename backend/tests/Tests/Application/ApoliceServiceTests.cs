@@ -127,4 +127,31 @@ public class ApoliceServiceTests
 
     _apoliceRepositoryMock.Verify(x => x.RemoverAsync(apolice, It.IsAny<CancellationToken>()), Times.Once);
   }
+
+  [Fact]
+  public async Task CancelarAsync_QuandoApoliceAtiva_DeveAlterarStatusParaCancelada()
+  {
+    var cliente = new Cliente("12345678900", "João da Silva");
+    var apolice = new Apolice("SEG-2026-0001", cliente.Id, "ABC1D23", 150m, DateTime.UtcNow, DateTime.UtcNow.AddMonths(12));
+    VincularCliente(apolice, cliente);
+
+    _apoliceRepositoryMock
+      .Setup(x => x.ObterPorIdAsync(apolice.Id, It.IsAny<CancellationToken>()))
+      .ReturnsAsync(apolice);
+
+    var resultado = await _service.CancelarAsync(apolice.Id);
+
+    Assert.Equal(nameof(InsurancePolicyManager.Domain.Enums.StatusApolice.Cancelada), resultado.Status);
+    _apoliceRepositoryMock.Verify(x => x.AtualizarAsync(apolice, It.IsAny<CancellationToken>()), Times.Once);
+  }
+
+  [Fact]
+  public async Task CancelarAsync_QuandoApoliceNaoExiste_DeveLancarDomainException()
+  {
+    _apoliceRepositoryMock
+      .Setup(x => x.ObterPorIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+      .ReturnsAsync((Apolice?)null);
+
+    await Assert.ThrowsAsync<DomainException>(() => _service.CancelarAsync(Guid.NewGuid()));
+  }
 }
