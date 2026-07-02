@@ -15,6 +15,7 @@ Sistema de gestão de apólices de seguro automóvel, com backend em .NET, persi
 - [Arquitetura](#arquitetura)
 - [Estrutura de pastas](#estrutura-de-pastas)
 - [Modelo de dados](#modelo-de-dados)
+- [Regras de negócio](#regras-de-negócio)
 - [Decisões técnicas](#decisões-técnicas)
 - [Como executar](#como-executar)
 - [Endpoints da API](#endpoints-da-api)
@@ -51,6 +52,7 @@ Além do CRUD principal, a aplicação disponibiliza uma consulta dedicada para 
 - Testes unitários focados em regras de negócio
 - Pipeline de CI/CD com GitHub Actions (build e testes automáticos a cada push)
 - Ambiente completo (API + Front + Banco) sobe com um único comando: `docker compose up`
+- Transições de status automatizadas: cancelamento sob demanda e expiração automática via job em background
 
 ---
 
@@ -63,7 +65,6 @@ Além do CRUD principal, a aplicação disponibiliza uma consulta dedicada para 
 ![Entity Framework Core](https://img.shields.io/badge/EF%20Core-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
 ![FluentValidation](https://img.shields.io/badge/FluentValidation-2E7D32?style=for-the-badge)
-![AutoMapper](https://img.shields.io/badge/AutoMapper-CA2C92?style=for-the-badge)
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 ![xUnit](https://img.shields.io/badge/xUnit-1E1E1E?style=for-the-badge)
 
@@ -183,7 +184,14 @@ Para otimizar as consultas mais frequentes, estão previstos índices na tabela 
 - `DataFim` - utilizado na consulta de apólices vencendo em 30 dias;
 - `ClienteId` (documento do segurado) - utilizado na busca de apólices por cliente.
 
-<!-- Placeholder: confirmar criação dos índices via migration (Fluent API / Data Annotations) -->
+---
+
+## Regras de negócio
+
+- Uma apólice é criada sempre com status `Ativa`.
+- **Cancelamento**: uma apólice `Ativa` pode ser cancelada manualmente via `PATCH /api/apolices/{id}/cancelar`. Apólices já `Canceladas` ou `Expiradas` não podem ser canceladas novamente.
+- **Expiração**: uma apólice `Ativa` é automaticamente marcada como `Expirada` quando sua `DataFim` é ultrapassada. Essa verificação roda em segundo plano, através de um job (`ExpirarApolicesJob`) executado a cada 24 horas - não depende de nenhuma ação manual do usuário.
+- Uma vez `Cancelada` ou `Expirada`, uma apólice não pode retornar ao status `Ativa`.
 
 ---
 
@@ -200,6 +208,7 @@ Para otimizar as consultas mais frequentes, estão previstos índices na tabela 
 - **Geração do número da apólice e transição de status**: implementadas como regra de negócio na camada `Application`/`Domain`, e não na camada de apresentação, para permitir testes isolados dessas regras.
 - **Nomenclatura de endpoints de filtro**: a consulta de apólices próximas do vencimento usa um sub-recurso com query parameter (`/api/apolices/vencimento-proximo?dias=30`) em vez de um valor fixo no path, mantendo a rota alinhada às convenções REST e o período configurável.
 - **Persistência via volume Docker**: como o SQLite é um banco baseado em arquivo (não um processo cliente-servidor), ele não aparece como um serviço próprio no `docker-compose.yml`. Em vez disso, o arquivo `.db` é persistido através de um volume Docker montado no container da Api, evitando perda de dados entre reinicializações.
+- **Job de expiração em background**: a transição de status `Ativa → Expirada` não depende de o usuário acessar o sistema; um `BackgroundService` verifica periodicamente as apólices vencidas e atualiza o status automaticamente, mantendo o dado sempre consistente com a data corrente.
 
 ---
 
@@ -228,8 +237,6 @@ Após a inicialização:
 | Frontend   | http://localhost:4200              |
 | Health Check | http://localhost:5000/health     |
 
-<!-- Placeholder: confirmar portas finais utilizadas em cada serviço -->
-
 ### Executando sem Docker (opcional)
 
 <!-- Placeholder: instruções de execução manual do backend (dotnet run) e do frontend (ng serve) -->
@@ -248,6 +255,7 @@ Após a inicialização:
 | PUT    | `/api/apolices/{id}`                         | Atualiza apólice existente                                                  |
 | DELETE | `/api/apolices/{id}`                         | Remove apólice                                                              |
 | GET    | `/api/apolices/vencimento-proximo?dias=30`   | Lista apólices que vencem no período informado (padrão: 30 dias)            |
+| PATCH  | `/api/apolices/{id}/cancelar`                | Cancela uma apólice ativa                                                   |
 
 **Clientes**
 
@@ -276,6 +284,7 @@ O projeto conta com testes unitários focados nas regras de negócio, priorizand
 - Resolução de cliente existente/novo na criação de apólice;
 - Validações de entrada (CPF/CNPJ, placa, datas, valor);
 - Serviços da camada `Application`.
+- Transições de status via cancelamento e via expiração automática (job em background);
 
 ```bash
 # Executar os testes do backend
@@ -343,6 +352,12 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 - [x] Testes unitários da resolução de cliente (existente/novo)
 - [x] Testes unitários das validações
 - [x] Testes unitários dos serviços
+
+### Transição de status
+- [x] Endpoint de cancelamento de apólice (`PATCH /api/apolices/{id}/cancelar`)
+- [x] Job de expiração automática (`BackgroundService`, executado periodicamente)
+- [x] Testes do cancelamento (apólice ativa, apólice já cancelada/expirada)
+- [x] Testes do job de expiração
 
 ### Frontend
 - [ ] Tela de listagem de apólices
