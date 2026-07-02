@@ -65,4 +65,21 @@ public class Apolice
     var limite = DateTime.UtcNow.Date.AddDays(dias);
     return Status == StatusApolice.Ativa && DataFim.Date <= limite;
   }
+
+  public void Atualizar(string placa, decimal valorPremio, DateTime dataInicio, DateTime dataFim)
+  {
+    if (string.IsNullOrWhiteSpace(placa))
+      throw new DomainException("Placa do veículo é obrigatória.");
+
+    if (valorPremio <= 0)
+      throw new DomainException("Valor do prêmio deve ser maior que zero.");
+
+    if (dataInicio >= dataFim)
+      throw new DomainException("Data de início deve ser anterior à data de término.");
+
+    Placa = placa;
+    ValorPremio = valorPremio;
+    DataInicio = dataInicio;
+    DataFim = dataFim;
+  }
 }
