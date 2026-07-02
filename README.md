@@ -318,13 +318,13 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 - [x] Migrations e seed de dados iniciais
 
 ### CRUD e API
-- [ ] Endpoint de criação de apólice (com resolução automática de cliente)
-- [ ] Endpoint de listagem (com paginação e filtros)
-- [ ] Endpoint de consulta por Id
-- [ ] Endpoint de atualização
-- [ ] Endpoint de exclusão
-- [ ] Endpoint de consulta de cliente por documento
-- [ ] Consulta de apólices vencendo em 30 dias (SQL + LINQ)
+- [x] Endpoint de criação de apólice (com resolução automática de cliente)
+- [x] Endpoint de listagem (com paginação e filtros)
+- [x] Endpoint de consulta por Id
+- [x] Endpoint de atualização
+- [x] Endpoint de exclusão
+- [x] Endpoint de consulta de cliente por documento
+- [x] Consulta de apólices vencendo em 30 dias (SQL + LINQ)
 
 ### Validações e tratamento de erros
 - [ ] FluentValidation (CPF/CNPJ, placa, datas, valor)
