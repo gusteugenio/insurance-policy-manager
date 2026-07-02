@@ -1,0 +1,12 @@
+@use '../../../../styles/variables' as v;
+
+.cliente-listagem {
+  &__titulo {
+    color: v.$color-secondary;
+    margin-bottom: 16px;
+  }
+
+  &__tabela {
+    width: 100%;
+  }
+}
