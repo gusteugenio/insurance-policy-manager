@@ -338,11 +338,11 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 - [x] Documentação Swagger
 
 ### Testes
-- [ ] Testes unitários da geração do número da apólice
-- [ ] Testes unitários das regras de status
-- [ ] Testes unitários da resolução de cliente (existente/novo)
-- [ ] Testes unitários das validações
-- [ ] Testes unitários dos serviços
+- [x] Testes unitários da geração do número da apólice
+- [x] Testes unitários das regras de status
+- [x] Testes unitários da resolução de cliente (existente/novo)
+- [x] Testes unitários das validações
+- [x] Testes unitários dos serviços
 
 ### Frontend
 - [ ] Tela de listagem de apólices
