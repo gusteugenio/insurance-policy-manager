@@ -1,0 +1,63 @@
+@use '../../../../styles/variables' as v;
+
+.apolice-form {
+  &__header {
+    margin-bottom: 16px;
+  }
+
+  &__titulo {
+    color: v.$color-secondary;
+    margin: 0;
+  }
+
+  &__card {
+    padding: 24px;
+    max-width: 640px;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__secao {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+  }
+
+  &__subtitulo {
+    color: v.$color-secondary-light;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 12px;
+  }
+
+  &__datas {
+    display: flex;
+    gap: 16px;
+
+    mat-form-field {
+      flex: 1;
+    }
+  }
+
+  &__erro-geral {
+    color: v.$color-danger;
+    font-size: 12px;
+    margin: -8px 0 8px;
+  }
+
+  &__acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+}
