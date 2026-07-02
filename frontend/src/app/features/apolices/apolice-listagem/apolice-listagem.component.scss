@@ -1,0 +1,46 @@
+@use '../../../../styles/variables' as v;
+
+.apolice-listagem {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  &__titulo {
+    color: v.$color-secondary;
+    margin: 0;
+  }
+
+  &__filtro-ativo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fdece3;
+    color: v.$color-primary-dark;
+    padding: 8px 16px;
+    border-radius: v.$radius-sm;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+
+  &__filtros {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  &__tabela {
+    width: 100%;
+  }
+
+  &__linha {
+    cursor: pointer;
+
+    &:hover {
+      background: v.$color-surface;
+    }
+  }
+}

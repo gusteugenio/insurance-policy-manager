@@ -1,0 +1,93 @@
+<div class="apolice-listagem">
+  <div class="apolice-listagem__header">
+    <h1 class="apolice-listagem__titulo">Apólices</h1>
+    <button mat-flat-button color="primary" routerLink="/apolices/novo">
+      <mat-icon>add</mat-icon>
+      Nova apólice
+    </button>
+  </div>
+
+  @if (clienteId) {
+    <div class="apolice-listagem__filtro-ativo">
+      Filtrando por cliente específico
+      <button mat-button (click)="limparFiltroCliente()">
+        <mat-icon>close</mat-icon>
+        Limpar filtro
+      </button>
+    </div>
+  }
+
+  <div class="apolice-listagem__filtros">
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="statusSelecionado" (selectionChange)="aoMudarFiltro()">
+        <mat-option [value]="null">Todos</mat-option>
+        @for (status of statusOptions; track status) {
+          <mat-option [value]="status">{{ status }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Ordenar por</mat-label>
+      <mat-select [(ngModel)]="ordenacaoSelecionada" (selectionChange)="aoMudarFiltro()">
+        <mat-option [value]="null">Data de início (padrão)</mat-option>
+        <mat-option value="datainicio">Data de início</mat-option>
+        <mat-option value="datafim">Data de término</mat-option>
+        <mat-option value="valorpremio">Valor do prêmio</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="card-elevated">
+    @if (carregando) {
+      <app-loading-spinner></app-loading-spinner>
+    } @else {
+      <table mat-table [dataSource]="apolices" class="apolice-listagem__tabela">
+        <ng-container matColumnDef="numero">
+          <th mat-header-cell *matHeaderCellDef>Número</th>
+          <td mat-cell *matCellDef="let apolice">{{ apolice.numero }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cliente">
+          <th mat-header-cell *matHeaderCellDef>Cliente</th>
+          <td mat-cell *matCellDef="let apolice">{{ apolice.cliente.nome }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="placa">
+          <th mat-header-cell *matHeaderCellDef>Placa</th>
+          <td mat-cell *matCellDef="let apolice">{{ apolice.placa }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="valorPremio">
+          <th mat-header-cell *matHeaderCellDef>Valor do prêmio</th>
+          <td mat-cell *matCellDef="let apolice">{{ apolice.valorPremio | currency:'BRL' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="dataFim">
+          <th mat-header-cell *matHeaderCellDef>Vigência até</th>
+          <td mat-cell *matCellDef="let apolice">{{ apolice.dataFim | date:'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let apolice">
+            <span class="status-chip" [ngClass]="'status-' + apolice.status.toLowerCase()">
+              {{ apolice.status }}
+            </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="colunas"></tr>
+        <tr mat-row *matRowDef="let row; columns: colunas;" (click)="verDetalhe(row)" class="apolice-listagem__linha"></tr>
+      </table>
+
+      <mat-paginator
+        [length]="total"
+        [pageSize]="tamanhoPagina"
+        [pageSizeOptions]="[10, 25, 50]"
+        (page)="aoMudarPagina($event)">
+      </mat-paginator>
+    }
+  </div>
+</div>
