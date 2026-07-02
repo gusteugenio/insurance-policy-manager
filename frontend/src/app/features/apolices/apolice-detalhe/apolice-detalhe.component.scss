@@ -1,0 +1,61 @@
+@use '../../../../styles/variables' as v;
+
+.apolice-detalhe {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  &__titulo {
+    color: v.$color-secondary;
+    margin: 8px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__acoes {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  &__card {
+    padding: 24px;
+  }
+
+  &__subtitulo {
+    color: v.$color-secondary-light;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 16px;
+  }
+
+  &__lista {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 16px;
+    margin: 0 0 16px;
+
+    dt {
+      color: v.$color-text-secondary;
+      font-size: 13px;
+    }
+
+    dd {
+      margin: 0;
+      font-weight: 500;
+    }
+  }
+}
