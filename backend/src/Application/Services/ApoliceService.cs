@@ -5,6 +5,7 @@ using InsurancePolicyManager.Domain.Entities;
 using InsurancePolicyManager.Domain.Enums;
 using InsurancePolicyManager.Domain.Exceptions;
 using InsurancePolicyManager.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace InsurancePolicyManager.Application.Services;
 
@@ -13,16 +14,22 @@ public class ApoliceService : IApoliceService
   private readonly IApoliceRepository _apoliceRepository;
   private readonly IClienteRepository _clienteRepository;
   private readonly IPolicyNumberGenerator _numeroGenerator;
+  private readonly ICorrelationIdProvider _correlationIdProvider;
+  private readonly ILogger<ApoliceService> _logger;
 
   public ApoliceService(
     IApoliceRepository apoliceRepository,
     IClienteRepository clienteRepository,
-    IPolicyNumberGenerator numeroGenerator)
-  {
+    IPolicyNumberGenerator numeroGenerator,
+    ICorrelationIdProvider correlationIdProvider,
+    ILogger<ApoliceService> logger)
+    {
     _apoliceRepository = apoliceRepository;
     _clienteRepository = clienteRepository;
     _numeroGenerator = numeroGenerator;
-  }
+    _correlationIdProvider = correlationIdProvider;
+    _logger = logger;
+    }
 
   public async Task<ApoliceDto> CriarAsync(CriarApoliceDto dto, CancellationToken cancellationToken = default)
   {
@@ -32,12 +39,16 @@ public class ApoliceService : IApoliceService
     {
       cliente = new Cliente(dto.DocumentoCliente, dto.NomeCliente);
       await _clienteRepository.AdicionarAsync(cliente, cancellationToken);
+
+      _logger.LogInformation("Cliente {ClienteId} criado automaticamente durante o cadastro de apólice. CorrelationId: {CorrelationId}", cliente.Id, _correlationIdProvider.GetCorrelationId());
     }
 
     var numero = await _numeroGenerator.GerarNumeroAsync(cancellationToken);
 
     var apolice = new Apolice(numero, cliente.Id, dto.Placa, dto.ValorPremio, dto.DataInicio, dto.DataFim);
     await _apoliceRepository.AdicionarAsync(apolice, cancellationToken);
+
+    _logger.LogInformation("Apólice {Numero} criada para o cliente {ClienteId}. CorrelationId: {CorrelationId}", apolice.Numero, cliente.Id, _correlationIdProvider.GetCorrelationId());
 
     apolice = await _apoliceRepository.ObterPorIdAsync(apolice.Id, cancellationToken);
     return MapearParaDto(apolice!);
@@ -74,6 +85,9 @@ public class ApoliceService : IApoliceService
     apolice.Atualizar(dto.Placa, dto.ValorPremio, dto.DataInicio, dto.DataFim);
 
     await _apoliceRepository.AtualizarAsync(apolice, cancellationToken);
+
+    _logger.LogInformation("Apólice {Numero} atualizada. CorrelationId: {CorrelationId}", apolice.Numero, _correlationIdProvider.GetCorrelationId());
+
     return MapearParaDto(apolice);
   }
 
@@ -83,6 +97,8 @@ public class ApoliceService : IApoliceService
       ?? throw new DomainException("Apólice não encontrada.");
 
     await _apoliceRepository.RemoverAsync(apolice, cancellationToken);
+
+    _logger.LogInformation("Apólice {Numero} removida. CorrelationId: {CorrelationId}", apolice.Numero, _correlationIdProvider.GetCorrelationId());
   }
 
   public async Task<IEnumerable<ApoliceDto>> ListarVencendoEmAsync(int dias, CancellationToken cancellationToken = default)
