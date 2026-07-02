@@ -237,6 +237,8 @@ Após a inicialização:
 | Frontend   | http://localhost:4200              |
 | Health Check | http://localhost:5000/health     |
 
+> O frontend também é buildado dentro do container: `npm ci` e `npm run build` acontecem automaticamente ao rodar `docker compose up`, sem necessidade de Node.js instalado na máquina.
+
 ### Executando sem Docker (opcional)
 
 <!-- Placeholder: instruções de execução manual do backend (dotnet run) e do frontend (ng serve) -->
