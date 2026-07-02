@@ -10,11 +10,11 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=Data Source=/app/data/insurancepolicy.db
 
-  frontend:
-    build:
-      context: ./frontend
-    ports:
-      - "4200:4200"
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   ports:
+  #     - "4200:4200"
 
 volumes:
   db-data:
