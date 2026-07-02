@@ -34,10 +34,9 @@ public class ApoliceService : IApoliceService
       await _clienteRepository.AdicionarAsync(cliente, cancellationToken);
     }
 
-    var placaNormalizada = dto.Placa.Trim().ToUpperInvariant().Replace("-", "");
     var numero = await _numeroGenerator.GerarNumeroAsync(cancellationToken);
 
-    var apolice = new Apolice(numero, cliente.Id, placaNormalizada, dto.ValorPremio, dto.DataInicio, dto.DataFim);
+    var apolice = new Apolice(numero, cliente.Id, dto.Placa, dto.ValorPremio, dto.DataInicio, dto.DataFim);
     await _apoliceRepository.AdicionarAsync(apolice, cancellationToken);
 
     apolice = await _apoliceRepository.ObterPorIdAsync(apolice.Id, cancellationToken);
@@ -72,8 +71,7 @@ public class ApoliceService : IApoliceService
     var apolice = await _apoliceRepository.ObterPorIdAsync(id, cancellationToken)
       ?? throw new DomainException("Apólice não encontrada.");
 
-    var placaNormalizada = dto.Placa.Trim().ToUpperInvariant().Replace("-", "");
-    apolice.Atualizar(placaNormalizada, dto.ValorPremio, dto.DataInicio, dto.DataFim);
+    apolice.Atualizar(dto.Placa, dto.ValorPremio, dto.DataInicio, dto.DataFim);
 
     await _apoliceRepository.AtualizarAsync(apolice, cancellationToken);
     return MapearParaDto(apolice);
