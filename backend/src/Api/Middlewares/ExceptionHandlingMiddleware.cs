@@ -10,6 +10,11 @@ public class ExceptionHandlingMiddleware
   private readonly RequestDelegate _next;
   private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
+  private static readonly JsonSerializerOptions _jsonOptions = new()
+  {
+    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+  };
+
   public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
   {
     _next = next;
@@ -40,6 +45,6 @@ public class ExceptionHandlingMiddleware
     context.Response.StatusCode = (int)statusCode;
 
     var response = ApiResponse<object>.Fail(message);
-    return context.Response.WriteAsync(JsonSerializer.Serialize(response));
+    return context.Response.WriteAsync(JsonSerializer.Serialize(response, _jsonOptions));
   }
 }
