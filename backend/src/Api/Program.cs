@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using InsurancePolicyManager.Application.Validators;
 using InsurancePolicyManager.Application.Common;
+using InsurancePolicyManager.Infrastructure.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +44,10 @@ builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<ICorrelationIdProvider, CorrelationIdProvider>();
 builder.Services.AddValidatorsFromAssemblyContaining<CriarApoliceValidator>();
 builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
+
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddHostedService<ExpirarApolicesJob>();
 
 var app = builder.Build();
 
