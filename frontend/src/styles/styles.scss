@@ -48,3 +48,9 @@ html, body {
     color: v.$color-text-secondary;
   }
 }
+
+.snackbar-sucesso {
+  --mdc-snackbar-container-color: #{v.$color-success};
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}
