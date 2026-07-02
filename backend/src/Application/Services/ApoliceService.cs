@@ -91,6 +91,20 @@ public class ApoliceService : IApoliceService
     return MapearParaDto(apolice);
   }
 
+  public async Task<ApoliceDto> CancelarAsync(Guid id, CancellationToken cancellationToken = default)
+  {
+    var apolice = await _apoliceRepository.ObterPorIdAsync(id, cancellationToken)
+      ?? throw new DomainException("Apólice não encontrada.");
+
+    apolice.Cancelar();
+
+    await _apoliceRepository.AtualizarAsync(apolice, cancellationToken);
+
+    _logger.LogInformation("Apólice {Numero} cancelada. CorrelationId: {CorrelationId}", apolice.Numero, _correlationIdProvider.GetCorrelationId());
+
+    return MapearParaDto(apolice);
+  }
+
   public async Task RemoverAsync(Guid id, CancellationToken cancellationToken = default)
   {
     var apolice = await _apoliceRepository.ObterPorIdAsync(id, cancellationToken)

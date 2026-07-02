@@ -120,6 +120,23 @@ public class ApolicesController : ControllerBase
   }
 
   /// <summary>
+  /// Cancela uma apólice ativa.
+  /// </summary>
+  /// <param name="id">Identificador único da apólice.</param>
+  /// <response code="200">Apólice cancelada com sucesso.</response>
+  /// <response code="400">Apólice já cancelada ou expirada.</response>
+  /// <response code="404">Apólice não encontrada.</response>
+  [HttpPatch("{id:guid}/cancelar")]
+  [ProducesResponseType(typeof(ApiResponse<ApoliceDto>), StatusCodes.Status200OK)]
+  [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+  [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+  public async Task<IActionResult> Cancelar(Guid id, CancellationToken cancellationToken)
+  {
+    var apolice = await _apoliceService.CancelarAsync(id, cancellationToken);
+    return Ok(ApiResponse<ApoliceDto>.Ok(apolice));
+  }
+
+  /// <summary>
   /// Remove uma apólice pelo Id.
   /// </summary>
   /// <param name="id">Identificador único da apólice.</param>

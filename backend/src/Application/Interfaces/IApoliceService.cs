@@ -11,4 +11,5 @@ public interface IApoliceService
   Task<ApoliceDto> AtualizarAsync(Guid id, AtualizarApoliceDto dto, CancellationToken cancellationToken = default);
   Task RemoverAsync(Guid id, CancellationToken cancellationToken = default);
   Task<IEnumerable<ApoliceDto>> ListarVencendoEmAsync(int dias, CancellationToken cancellationToken = default);
+  Task<ApoliceDto> CancelarAsync(Guid id, CancellationToken cancellationToken = default);
 }
