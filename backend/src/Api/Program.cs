@@ -4,9 +4,9 @@ using InsurancePolicyManager.Domain.Interfaces;
 using InsurancePolicyManager.Infrastructure.Repositories;
 using InsurancePolicyManager.Infrastructure.Persistence;
 using InsurancePolicyManager.Infrastructure.Services;
+using InsurancePolicyManager.Api.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using InsurancePolicyManager.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +27,6 @@ builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IApoliceService, ApoliceService>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CriarApoliceValidator>();
-builder.Services.AddFluentValidationAutoValidation();
 
 var app = builder.Build();
 
@@ -45,6 +44,8 @@ using (var scope = app.Services.CreateScope())
 // HTTPS redirection desabilitado propositalmente: a aplicação roda via Docker em HTTP,
 // sem necessidade de certificado SSL para o escopo deste projeto.
 // app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthorization();
 
