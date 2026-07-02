@@ -11,6 +11,20 @@ public class ClienteRepository : IClienteRepository
 
   public ClienteRepository(AppDbContext context) => _context = context;
 
+  public async Task<(IEnumerable<Cliente> Itens, int Total)> ListarAsync(int pagina, int tamanhoPagina, CancellationToken cancellationToken = default)
+  {
+    var query = _context.Clientes.OrderBy(c => c.Nome).AsQueryable();
+
+    var total = await query.CountAsync(cancellationToken);
+
+    var itens = await query
+      .Skip((pagina - 1) * tamanhoPagina)
+      .Take(tamanhoPagina)
+      .ToListAsync(cancellationToken);
+
+    return (itens, total);
+  }
+
   public async Task<Cliente?> ObterPorDocumentoAsync(string documento, CancellationToken cancellationToken = default)
     => await _context.Clientes.FirstOrDefaultAsync(c => c.Documento == documento, cancellationToken);
 
