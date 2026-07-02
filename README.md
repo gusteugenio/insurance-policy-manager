@@ -249,7 +249,7 @@ Após a inicialização:
 
 | Método | Rota                                       | Descrição                                                              |
 |--------|----------------------------------------------|----------------------------------------------------------------------------|
-| GET    | `/api/apolices`                              | Lista apólices (com paginação e filtros)                                    |
+| GET    | `/api/apolices`                              | Lista apólices (paginação, filtro por status, clienteId e dataInicio)       |
 | GET    | `/api/apolices/{id}`                         | Consulta apólice por Id                                                     |
 | POST   | `/api/apolices`                              | Cadastra nova apólice (cria o cliente automaticamente, se necessário)       |
 | PUT    | `/api/apolices/{id}`                         | Atualiza apólice existente                                                  |
@@ -259,9 +259,10 @@ Após a inicialização:
 
 **Clientes**
 
-| Método | Rota                              | Descrição                            |
+| Método | Rota                                | Descrição                            |
 |--------|-------------------------------------|-----------------------------------------|
-| GET    | `/api/clientes/{documento}`        | Consulta cliente por CPF/CNPJ           |
+| GET    | `/api/clientes`                     | Lista clientes cadastrados (com paginação)           |
+| GET    | `/api/clientes/{documento}`         | Consulta cliente por CPF/CNPJ           |
 
 **Infraestrutura**
 
@@ -360,9 +361,11 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 - [x] Testes do job de expiração
 
 ### Frontend
-- [ ] Tela de listagem de apólices
-- [ ] Tela de cadastro/edição
-- [ ] Tela de detalhe
+- [ ] Tela de listagem de apólices (com filtros de status, clienteId e dataInicio)
+- [ ] Tela de cadastro/edição de apólice
+- [ ] Tela de detalhe de apólice
+- [ ] Tela de listagem de clientes
+- [ ] Navegação de "cliente" para "apólices daquele cliente" (reaproveitando a listagem de apólices com filtro de clienteId)
 - [ ] Interceptors (tratamento de erro e URL base da API)
 - [ ] Feedback visual (loading, toasts)
 - [ ] Validação de formulário espelhando o backend
