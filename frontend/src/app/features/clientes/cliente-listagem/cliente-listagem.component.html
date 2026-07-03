@@ -1,5 +1,9 @@
 <div class="cliente-listagem">
-  <h1 class="cliente-listagem__titulo">Clientes</h1>
+  <div class="cliente-listagem__header">
+    <p class="page-eyebrow">Gestão de seguros</p>
+    <h1 class="page-title">Clientes</h1>
+    <p class="page-subtitle">Clientes com apólices cadastradas</p>
+  </div>
 
   <div class="card-elevated">
     @if (carregando) {
@@ -20,7 +24,7 @@
 
           <ng-container matColumnDef="documento">
             <th mat-header-cell *matHeaderCellDef>CPF/CNPJ</th>
-            <td mat-cell *matCellDef="let cliente">{{ cliente.documento }}</td>
+            <td mat-cell *matCellDef="let cliente">{{ formatarDocumento(cliente.documento) }}</td>
           </ng-container>
 
           <ng-container matColumnDef="acoes">

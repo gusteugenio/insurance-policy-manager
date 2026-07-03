@@ -11,6 +11,7 @@ import { NotificationService } from '../../../shared/services/notification.servi
 import { Apolice } from '../../../core/models/apolice.model';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { formatarDocumento } from '../../../shared/validators/apolice.validators';
 
 @Component({
   selector: 'app-apolice-detalhe',
@@ -24,6 +25,7 @@ export class ApoliceDetalheComponent implements OnInit {
   carregando = false;
   processando = false;
   apoliceId!: string;
+  formatarDocumento = formatarDocumento;
 
   constructor(
     private apoliceService: ApoliceService,

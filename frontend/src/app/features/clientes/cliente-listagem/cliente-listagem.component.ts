@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ClienteService } from '../../../core/services/cliente.service';
 import { Cliente } from '../../../core/models/cliente.model';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
+import { formatarDocumento } from '../../../shared/validators/apolice.validators';
 
 @Component({
   selector: 'app-cliente-listagem',
@@ -21,6 +22,7 @@ export class ClienteListagemComponent implements OnInit {
   pagina = 1;
   tamanhoPagina = 10;
   carregando = false;
+  formatarDocumento = formatarDocumento;
 
   colunas = ['nome', 'documento', 'acoes'];
 

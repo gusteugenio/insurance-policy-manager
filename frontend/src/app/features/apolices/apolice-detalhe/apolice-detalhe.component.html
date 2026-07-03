@@ -8,7 +8,8 @@
           <mat-icon>arrow_back</mat-icon>
           Voltar
         </button>
-        <h1 class="apolice-detalhe__titulo">
+        <p class="page-eyebrow">Apólices</p>
+        <h1 class="page-title apolice-detalhe__titulo">
           Apólice {{ apolice.numero }}
           <span class="status-chip" [ngClass]="'status-' + apolice.status.toLowerCase()">{{ apolice.status }}</span>
         </h1>
@@ -57,7 +58,7 @@
           <dd>{{ apolice.cliente.nome }}</dd>
 
           <dt>CPF/CNPJ</dt>
-          <dd>{{ apolice.cliente.documento }}</dd>
+          <dd>{{ formatarDocumento(apolice.cliente.documento) }}</dd>
         </dl>
         <button mat-button color="primary" (click)="verApolicesDoCliente()">
           Ver todas as apólices deste cliente
