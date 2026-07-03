@@ -57,11 +57,11 @@
               "extractLicenses": false,
               "sourceMap": true
             },
-            "render": {
+            "vercel": {
               "fileReplacements": [
-                {
+                { 
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.render.ts"
+                  "with": "src/environments/environment.vercel.ts"
                 }
               ]
             }
