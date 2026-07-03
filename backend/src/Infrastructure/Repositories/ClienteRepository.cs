@@ -26,7 +26,10 @@ public class ClienteRepository : IClienteRepository
   }
 
   public async Task<Cliente?> ObterPorDocumentoAsync(string documento, CancellationToken cancellationToken = default)
-    => await _context.Clientes.FirstOrDefaultAsync(c => c.Documento == documento, cancellationToken);
+  {
+    var documentoNormalizado = Cliente.NormalizarDocumento(documento);
+    return await _context.Clientes.FirstOrDefaultAsync(c => c.Documento == documentoNormalizado, cancellationToken);
+  }
 
   public async Task AdicionarAsync(Cliente cliente, CancellationToken cancellationToken = default)
   {

@@ -15,14 +15,19 @@ public class Cliente
 
   public Cliente(string documento, string nome)
   {
-    if (string.IsNullOrWhiteSpace(documento))
+    var documentoNormalizado = NormalizarDocumento(documento);
+
+    if (string.IsNullOrWhiteSpace(documentoNormalizado))
       throw new DomainException("Documento do cliente é obrigatório.");
 
     if (string.IsNullOrWhiteSpace(nome))
       throw new DomainException("Nome do cliente é obrigatório.");
 
     Id = Guid.NewGuid();
-    Documento = documento;
+    Documento = documentoNormalizado;
     Nome = nome;
   }
+
+  public static string NormalizarDocumento(string documento)
+    => new string((documento ?? string.Empty).Where(char.IsDigit).ToArray());
 }
