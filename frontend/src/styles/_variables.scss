@@ -1,6 +1,8 @@
 $color-primary: #ed6326;
 $color-primary-light: #f4926a;
 $color-primary-dark: #c94f1a;
+$color-primary-soft: #fef3ee;
+$color-primary-hover: #d55922;
 
 $color-secondary: #2b3a42;
 $color-secondary-light: #4a5c66;
@@ -21,3 +23,6 @@ $radius-md: 10px;
 $radius-lg: 16px;
 
 $shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+$shadow-card-hover: 0 6px 20px rgba(0, 0, 0, 0.08);
+
+$font-family-base: 'Inter', Roboto, 'Helvetica Neue', sans-serif;

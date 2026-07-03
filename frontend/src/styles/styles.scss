@@ -1,5 +1,9 @@
+@use '@angular/material' as mat;
+@use './theme' as theme;
 @use './variables' as v;
-@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+@include mat.core();
+@include mat.all-component-themes(theme.$mp-theme);
 
 * {
   box-sizing: border-box;
@@ -8,7 +12,7 @@
 html, body {
   height: 100%;
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-family: v.$font-family-base;
   background-color: v.$color-surface;
   color: v.$color-text-primary;
 }
@@ -46,6 +50,35 @@ html, body {
   &.status-expirada {
     background: #f1f1f1;
     color: v.$color-text-secondary;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 24px;
+  color: v.$color-text-secondary;
+  text-align: center;
+
+  mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: v.$color-primary-light;
+    margin-bottom: 12px;
+  }
+
+  p {
+    margin: 0;
+    font-weight: 600;
+    color: v.$color-secondary;
+  }
+
+  span {
+    font-size: 13px;
+    margin-top: 4px;
   }
 }
 
