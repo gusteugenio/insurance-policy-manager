@@ -10,17 +10,6 @@
     margin-bottom: 20px;
   }
 
-  &__titulo {
-    color: v.$color-secondary;
-    margin: 0;
-  }
-
-  &__subtitulo {
-    color: v.$color-text-secondary;
-    margin: 4px 0 0;
-    font-size: 14px;
-  }
-
   &__filtro-ativo {
     display: flex;
     align-items: center;
@@ -44,6 +33,7 @@
 
   &__filtros {
     display: flex;
+    align-items: center;
     gap: 16px;
     margin-bottom: 16px;
     flex-wrap: wrap;

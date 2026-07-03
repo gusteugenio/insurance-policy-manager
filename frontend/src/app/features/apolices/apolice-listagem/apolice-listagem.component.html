@@ -1,8 +1,9 @@
 <div class="apolice-listagem">
   <div class="apolice-listagem__header">
     <div>
-      <h1 class="apolice-listagem__titulo">Apólices</h1>
-      <p class="apolice-listagem__subtitulo">Acompanhe e gerencie as apólices cadastradas</p>
+      <p class="page-eyebrow">Gestão de seguros</p>
+      <h1 class="page-title">Apólices</h1>
+      <p class="page-subtitle">Acompanhe e gerencie as apólices cadastradas</p>
     </div>
     <button mat-flat-button color="primary" routerLink="/apolices/novo">
       <mat-icon>add</mat-icon>
@@ -24,7 +25,7 @@
   <div class="apolice-listagem__filtros">
     <mat-form-field appearance="outline">
       <mat-label>Status</mat-label>
-      <mat-select [(ngModel)]="statusSelecionado" (selectionChange)="aoMudarFiltro()">
+      <mat-select [(ngModel)]="statusSelecionado" [disabled]="vencendoEm30Dias" (selectionChange)="aoMudarFiltro()">
         <mat-option [value]="null">Todos os status</mat-option>
         @for (status of statusOptions; track status) {
           <mat-option [value]="status">{{ status }}</mat-option>
@@ -34,13 +35,17 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Ordenar por</mat-label>
-      <mat-select [(ngModel)]="ordenacaoSelecionada" (selectionChange)="aoMudarFiltro()">
-        <mat-option [value]="null">Mais recentes</mat-option>
-        <mat-option value="datainicio">Mais antigas</mat-option>
-        <mat-option value="datafim">Data de término próximo</mat-option>
+      <mat-select [(ngModel)]="ordenacaoSelecionada" [disabled]="vencendoEm30Dias" (selectionChange)="aoMudarFiltro()">
+        <mat-option [value]="null">Mais recentes </mat-option>
+        <mat-option value="datainicio">Data de ínicio</mat-option>
+        <mat-option value="datafim">Data de vencimento próximo</mat-option>
         <mat-option value="valorpremio">Valor do prêmio</mat-option>
       </mat-select>
     </mat-form-field>
+
+    <mat-slide-toggle color="primary" [(ngModel)]="vencendoEm30Dias" (change)="aoAlternarVencendoEm30Dias()">
+      Vencendo em 30 dias
+    </mat-slide-toggle>
   </div>
 
   <div class="card-elevated">
@@ -58,6 +63,11 @@
           <ng-container matColumnDef="numero">
             <th mat-header-cell *matHeaderCellDef>Número</th>
             <td mat-cell *matCellDef="let apolice">{{ apolice.numero }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="dataInicio">
+            <th mat-header-cell *matHeaderCellDef>Início</th>
+            <td mat-cell *matCellDef="let apolice">{{ apolice.dataInicio | date:'dd/MM/yyyy' }}</td>
           </ng-container>
 
           <ng-container matColumnDef="cliente">
@@ -94,12 +104,14 @@
         </table>
       </div>
 
-      <mat-paginator
-        [length]="total"
-        [pageSize]="tamanhoPagina"
-        [pageSizeOptions]="[10, 25, 50]"
-        (page)="aoMudarPagina($event)">
-      </mat-paginator>
+      @if (!vencendoEm30Dias) {
+        <mat-paginator
+          [length]="total"
+          [pageSize]="tamanhoPagina"
+          [pageSizeOptions]="[10, 25, 50]"
+          (page)="aoMudarPagina($event)">
+        </mat-paginator>
+      }
     }
   </div>
 </div>
