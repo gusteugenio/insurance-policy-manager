@@ -1,0 +1,18 @@
+sequenceDiagram
+  participant U as Usuário
+  participant F as Frontend
+  participant A as Api
+  participant S as ApoliceService
+  participant D as Banco
+
+  U->>F: Preenche formulário de apólice
+  F->>A: POST /api/apolices
+  A->>S: CriarAsync(dto)
+  S->>D: Busca cliente por documento
+  alt cliente não existe
+    S->>D: Cria cliente
+  end
+  S->>D: Gera número e salva apólice
+  S-->>A: ApoliceDto
+  A-->>F: 201 Created
+  F-->>U: Redireciona para detalhe

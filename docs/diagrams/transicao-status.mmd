@@ -1,0 +1,6 @@
+stateDiagram-v2
+  [*] --> Ativa
+  Ativa --> Cancelada: cancelar (manual)
+  Ativa --> Expirada: DataFim vencida (job automático)
+  Cancelada --> [*]
+  Expirada --> [*]

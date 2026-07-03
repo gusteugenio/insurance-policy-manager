@@ -1,0 +1,162 @@
+{
+  "info": {
+    "name": "Insurance Policy Manager",
+    "description": "Colecao de endpoints da API de gestao de apolices de seguro automovel.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000", "type": "string" },
+    { "key": "base_url_prod", "value": "https://SEU-BACKEND.up.railway.app", "type": "string" },
+    { "key": "apoliceId", "value": "", "type": "string" },
+    { "key": "documento", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Apolices",
+      "item": [
+        {
+          "name": "Criar apolice",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentoCliente\": \"12345678900\",\n  \"nomeCliente\": \"Joao da Silva\",\n  \"placa\": \"ABC1D23\",\n  \"valorPremio\": 250.90,\n  \"dataInicio\": \"2026-07-01T00:00:00Z\",\n  \"dataFim\": \"2027-07-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/apolices",
+              "host": ["{{base_url}}"],
+              "path": ["api", "apolices"]
+            }
+          }
+        },
+        {
+          "name": "Listar apolices",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/apolices?pagina=1&tamanhoPagina=10&status=Ativa&ordenarPor=datainicio",
+              "host": ["{{base_url}}"],
+              "path": ["api", "apolices"],
+              "query": [
+                { "key": "pagina", "value": "1" },
+                { "key": "tamanhoPagina", "value": "10" },
+                { "key": "status", "value": "Ativa" },
+                { "key": "clienteId", "value": "", "disabled": true },
+                { "key": "ordenarPor", "value": "datainicio" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obter apolice por Id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/apolices/{{apoliceId}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "apolices", "{{apoliceId}}"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar apolice",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"placa\": \"ABC1D23\",\n  \"valorPremio\": 279.90,\n  \"dataInicio\": \"2026-07-01T00:00:00Z\",\n  \"dataFim\": \"2027-08-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/apolices/{{apoliceId}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "apolices", "{{apoliceId}}"]
+            }
+          }
+        },
+        {
+          "name": "Cancelar apolice",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/api/apolices/{{apoliceId}}/cancelar",
+              "host": ["{{base_url}}"],
+              "path": ["api", "apolices", "{{apoliceId}}", "cancelar"]
+            }
+          }
+        },
+        {
+          "name": "Remover apolice",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/apolices/{{apoliceId}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "apolices", "{{apoliceId}}"]
+            }
+          }
+        },
+        {
+          "name": "Vencimento proximo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/apolices/vencimento-proximo?dias=30",
+              "host": ["{{base_url}}"],
+              "path": ["api", "apolices", "vencimento-proximo"],
+              "query": [{ "key": "dias", "value": "30" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Listar clientes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/clientes?pagina=1&tamanhoPagina=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "clientes"],
+              "query": [
+                { "key": "pagina", "value": "1" },
+                { "key": "tamanhoPagina", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obter cliente por documento",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/clientes/{{documento}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "clientes", "{{documento}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Infraestrutura",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

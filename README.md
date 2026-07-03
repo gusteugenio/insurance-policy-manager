@@ -2,8 +2,9 @@
 
 Sistema de gestão de apólices de seguro automóvel, com backend em .NET, persistência relacional, testes automatizados e frontend em Angular. O projeto foi construído com foco em organização de código, separação de responsabilidades e boas práticas de engenharia de software.
 
-<!-- Placeholder: adicionar um banner/print da tela principal da aplicação aqui -->
-<!-- ![Banner do projeto](media/banner.png) -->
+<p align="center">
+  <img src="media/banner.png" alt="Banner do projeto" width="1000">
+</p>
 
 ---
 
@@ -15,14 +16,19 @@ Sistema de gestão de apólices de seguro automóvel, com backend em .NET, persi
 - [Arquitetura](#arquitetura)
 - [Estrutura de pastas](#estrutura-de-pastas)
 - [Modelo de dados](#modelo-de-dados)
+- [Diagramas](#diagramas)
 - [Regras de negócio](#regras-de-negócio)
 - [Decisões técnicas](#decisões-técnicas)
 - [Como executar](#como-executar)
 - [Endpoints da API](#endpoints-da-api)
 - [Filtros e ordenação](#filtros-e-ordenação)
 - [Testes](#testes)
+- [Coleção Postman](#coleção-postman)
+- [Capturas de tela](#capturas-de-tela)
+- [Deploy](#deploy)
 - [Documentação adicional](#documentação-adicional)
 - [Checklist de desenvolvimento](#checklist-de-desenvolvimento)
+- [Contato](#contato)
 
 ---
 
@@ -80,6 +86,8 @@ Além do CRUD principal, a aplicação disponibiliza uma consulta dedicada para 
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Docker Compose](https://img.shields.io/badge/Docker%20Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
+![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
 ---
 
@@ -98,6 +106,8 @@ InsurancePolicyManager
 ```
 
 **Fluxo de uma requisição:** `Api` recebe a requisição → aplica middlewares (exceção, correlationId) → delega para `Application` → regras de negócio são aplicadas via `Domain` → persistência é feita através de `Infrastructure`.
+
+O diagrama da arquitetura está disponível na seção [Diagramas](#diagramas).
 
 ---
 
@@ -118,13 +128,23 @@ insurance-policy-manager/
 │       └── app/
 │           ├── core/
 │           ├── features/
-│           │   └── apolices/
-│           |   └── clientes/
+│           │   ├── apolices/
+│           │   └── clientes/
 │           └── shared/
 ├── media/
 ├── docs/
 │   ├── fluxo.md
-│   └── regras-de-negocio.md
+│   ├── regras-de-negocio.md
+│   └── diagrams/
+│       ├── arquitetura.mmd
+│       ├── modelo-dados.mmd
+│       ├── transicao-status.mmd
+│       └── fluxo-cadastro.mmd
+├── postman/
+│   └── InsurancePolicyManager.postman_collection.json
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── docker-compose.yml
 └── README.md
 ```
@@ -190,12 +210,64 @@ Para otimizar as consultas mais frequentes, estão previstos índices na tabela 
 
 ---
 
+## Diagramas
+
+Os arquivos-fonte também estão disponíveis em [`docs/diagrams/`](docs/diagrams/).
+
+### Arquitetura em camadas
+
+```mermaid
+flowchart TD
+  F[Frontend Angular] --> A[Api: Controllers e Middlewares]
+  A --> AP[Application: Services, DTOs, Validators]
+  AP --> D[Domain: Entidades e Regras]
+  AP --> I[Infrastructure: EF Core, Repositórios]
+  I --> DB[(SQLite)]
+```
+
+### Transição de status
+
+```mermaid
+stateDiagram-v2
+  [*] --> Ativa
+  Ativa --> Cancelada: cancelar (manual)
+  Ativa --> Expirada: DataFim vencida (job automático)
+  Cancelada --> [*]
+  Expirada --> [*]
+```
+
+### Fluxo de cadastro de apólice
+
+```mermaid
+sequenceDiagram
+  participant U as Usuário
+  participant F as Frontend
+  participant A as Api
+  participant S as ApoliceService
+  participant D as Banco
+
+  U->>F: Preenche formulário de apólice
+  F->>A: POST /api/apolices
+  A->>S: CriarAsync(dto)
+  S->>D: Busca cliente por documento
+  alt cliente não existe
+    S->>D: Cria cliente
+  end
+  S->>D: Gera número e salva apólice
+  S-->>A: ApoliceDto
+  A-->>F: 201 Created
+  F-->>U: Redireciona para detalhe
+```
+
+> O diagrama ER do modelo de dados está na seção [Modelo de dados](#modelo-de-dados) e também em `docs/diagrams/modelo-dados.mmd`.
+
+---
+
 ## Regras de negócio
 
-- Uma apólice é criada sempre com status `Ativa`.
-- **Cancelamento**: uma apólice `Ativa` pode ser cancelada manualmente via `PATCH /api/apolices/{id}/cancelar`. Apólices já `Canceladas` ou `Expiradas` não podem ser canceladas novamente.
-- **Expiração**: uma apólice `Ativa` é automaticamente marcada como `Expirada` quando sua `DataFim` é ultrapassada. Essa verificação roda em segundo plano, através de um job (`ExpirarApolicesJob`) executado a cada 1 minuto - em produção 24 horas seria o ideal.
-- Uma vez `Cancelada` ou `Expirada`, uma apólice não pode retornar ao status `Ativa`.
+A apólice nasce sempre `Ativa`; pode ser cancelada manualmente ou expirar automaticamente via job em background, e uma vez `Cancelada`/`Expirada` não retorna a `Ativa`. O cliente é resolvido (ou criado) automaticamente a partir do documento informado no cadastro da apólice.
+
+O detalhamento completo - geração de número, transições de status, resolução de cliente e validações de entrada - está em [`docs/regras-de-negocio.md`](docs/regras-de-negocio.md).
 
 ---
 
@@ -204,7 +276,6 @@ Para otimizar as consultas mais frequentes, estão previstos índices na tabela 
 - **Clean Architecture simplificada**: escolhida para manter a separação de responsabilidades sem introduzir complexidade desnecessária para o porte da aplicação.
 - **SQLite**: adotado por facilitar a execução do projeto sem exigir configuração adicional de infraestrutura, mantendo compatibilidade com o padrão de persistência relacional via EF Core.
 - **Entidade Cliente separada da Apólice**: optou-se por extrair `Cliente` como entidade própria, em vez de manter o documento como um campo solto na apólice, permitindo relacionamento correto (1:N) e evitando duplicidade de dados de um mesmo cliente em múltiplas apólices.
-- **Resolução automática de cliente na criação da apólice**: ao cadastrar uma apólice, o serviço verifica se já existe um cliente com o documento informado; caso não exista, o cliente é criado automaticamente com os dados mínimos enviados no próprio formulário, evitando a necessidade de um fluxo de cadastro separado.
 - **FluentValidation**: utilizado para desacoplar as regras de validação de entrada das regras de negócio propriamente ditas.
 - **Middleware global de exceções**: centraliza o tratamento de erros e garante um formato de resposta consistente em toda a API.
 - **Padronização de respostas**: todas as respostas seguem a estrutura `success`, `data`/`message`, evitando formatos divergentes entre endpoints.
@@ -229,7 +300,7 @@ Para otimizar as consultas mais frequentes, estão previstos índices na tabela 
 cd insurance-policy-manager
 
 # Suba a aplicação completa (API + Front + Banco)
-docker compose up
+docker compose up --build
 ```
 
 Após a inicialização:
@@ -250,7 +321,7 @@ Após a inicialização:
 **Apólices**
 
 | Método | Rota                                         | Descrição                                                                                    |
-|--------|----------------------------------------------|----------------------------------------------------------------------------------------------|
+|--------|----------------------------------------------|------------------------------------------------------------------------------------------------|
 | GET    | `/api/apolices`                              | Lista apólices (filtros por status e clienteId; ordenação - ver seção "Filtros e ordenação") |
 | GET    | `/api/apolices/{id}`                         | Consulta apólice por Id                                                                      |
 | POST   | `/api/apolices`                              | Cadastra nova apólice (cria o cliente automaticamente, se necessário)                        |
@@ -273,6 +344,10 @@ Após a inicialização:
 | GET    | `/health` | Verifica status da API       |
 
 A documentação completa e interativa de todos os endpoints está disponível via Swagger em `/swagger` após a execução do projeto.
+
+<p align="center">
+  <img src="media/swagger.png" alt="Swagger" width="800">
+</p>
 
 ---
 
@@ -314,14 +389,65 @@ O projeto conta com testes unitários focados nas regras de negócio, priorizand
 - Resolução de cliente existente/novo na criação de apólice;
 - Validações de entrada (CPF/CNPJ, placa, datas, valor);
 - Serviços da camada `Application`.
-- Transições de status via cancelamento e via expiração automática (job em background);
+- Transições de status via cancelamento e via expiração automática (job em background).
 
 ```bash
 # Executar os testes do backend
 cd backend
 dotnet test
 ```
-Os testes também são executados automaticamente a cada push através do pipeline de CI/CD configurado no GitHub Actions, garantindo que alterações não quebrem regras de negócio já validadas.
+
+Os testes também são executados automaticamente a cada push através do pipeline de CI/CD configurado no GitHub Actions (`.github/workflows/ci.yml`), garantindo que alterações não quebrem regras de negócio já validadas.
+
+---
+
+## Coleção Postman
+
+Uma coleção pronta para uso está disponível em [`postman/InsurancePolicyManager.postman_collection.json`](postman/InsurancePolicyManager.postman_collection.json), cobrindo todos os endpoints de Apólices, Clientes e o Health Check.
+
+A URL base é parametrizada pela variável de coleção `base_url`:
+
+- **Local** *(padrão)*: `http://localhost:5000`
+- **Produção**: atualize a variável `base_url` (ou use `base_url_prod` como referência) para a URL publicada do backend no Railway.
+
+Para usar: no Postman, `File > Import`, selecione o arquivo e ajuste a variável `base_url` conforme o ambiente.
+
+---
+
+## Capturas de tela
+
+### Listagem de apólices
+
+<p align="center">
+  <img src="media/listagem-apolices.png" alt="Listagem de apólices" width="800">
+</p>
+
+### Cadastro de apólice
+
+<p align="center">
+  <img src="media/cadastro-apolice.png" alt="Cadastro de apólice" width="800">
+</p>
+
+### Detalhe da apólice
+
+<p align="center">
+  <img src="media/detalhe-apolice.png" alt="Detalhe da apólice" width="800">
+</p>
+
+### Clientes
+
+<p align="center">
+  <img src="media/listagem-clientes.png" alt="Clientes" width="800">
+</p>
+
+---
+
+## Deploy
+
+| Camada | Plataforma | URL |
+|---|---|---|
+| Backend (.NET) | Railway | *(preencher após o deploy)* |
+| Frontend (Angular) | Render | *(preencher após o deploy)* |
 
 ---
 
@@ -331,7 +457,9 @@ Além deste README, o projeto conta com documentação complementar:
 
 - **`docs/fluxo.md`** - descreve o fluxo funcional da aplicação, do cadastro à consulta de apólices;
 - **`docs/regras-de-negocio.md`** - detalha as regras de negócio implementadas (geração de número, transições de status, resolução de cliente, validações);
-- **`media/`** - pasta com prints do fluxo de uso da aplicação.
+- **`docs/diagrams/`** - arquivos-fonte dos diagramas em Mermaid, também renderizados na seção [Diagramas](#diagramas);
+- **`postman/`** - coleção Postman com todos os endpoints da API (ver [Coleção Postman](#coleção-postman));
+- **`media/`** - pasta com prints do fluxo de uso da aplicação e do Swagger (ver [Capturas de tela](#capturas-de-tela)).
 
 ---
 
@@ -348,7 +476,7 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 - [x] Entidade Cliente
 - [x] Entidade Apólice e enum de Status
 - [x] Relacionamento Cliente 1:N Apólice
-- [x] Índices em `Status`, `DataFim` e `ClienteId`/documento
+- [x] Índices em `Status`, `DataFim` e `ClienteId`
 - [x] Gerador de número da apólice (`SEG-YYYY-XXXX`)
 - [x] Regras de transição de status
 - [x] Migrations e seed de dados iniciais
@@ -398,10 +526,24 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 - [x] Validação de formulário espelhando o backend
 
 ### DevOps e documentação
-- [ ] Pipeline de CI/CD no GitHub Actions (restore, build, testes)
-- [ ] `docs/fluxo.md` e `docs/regras-de-negocio.md`
-- [ ] Prints do fluxo em `media/`
-- [ ] Diagrama de arquitetura e diagrama ER
-- [ ] README completo
-- [ ] Deploy (opcional)
+- [x] Pipeline de CI/CD no GitHub Actions (restore, build, testes)
+- [x] `docs/fluxo.md` e `docs/regras-de-negocio.md`
+- [x] Prints do fluxo em `media/`
+- [x] Diagrama de arquitetura, modelo de dados e transição de status (Mermaid, em `docs/diagrams/`)
+- [x] README completo
+- [x] Coleção Postman (`postman/`)
+- [ ] Deploy
 
+---
+
+## Contato
+
+<div align="center">
+  <p>Desenvolvido com 🧡 por <strong>Gustavo Eugênio</strong></p>
+  <a href="mailto:gustavoeugenio297@gmail.com">
+    <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
+  </a>
+  <a href="https://www.linkedin.com/in/gusteugenio/">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
+  </a>
+</div>

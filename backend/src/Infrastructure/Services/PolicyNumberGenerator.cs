@@ -18,11 +18,17 @@ public class PolicyNumberGenerator : IPolicyNumberGenerator
     var ano = DateTime.UtcNow.Year;
     var prefixo = $"SEG-{ano}-";
 
-    var quantidadeNoAno = await _context.Apolices
+    var numeros = await _context.Apolices
       .Where(a => a.Numero.StartsWith(prefixo))
-      .CountAsync(cancellationToken);
+      .Select(a => a.Numero)
+      .ToListAsync(cancellationToken);
 
-    var proximoNumero = quantidadeNoAno + 1;
+    var maiorSequencial = numeros
+      .Select(n => int.TryParse(n.AsSpan(prefixo.Length), out var seq) ? seq : 0)
+      .DefaultIfEmpty(0)
+      .Max();
+
+    var proximoNumero = maiorSequencial + 1;
     return $"{prefixo}{proximoNumero:D4}";
   }
 }
