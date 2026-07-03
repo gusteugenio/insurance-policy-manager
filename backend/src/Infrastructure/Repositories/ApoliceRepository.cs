@@ -33,8 +33,8 @@ public class ApoliceRepository : IApoliceRepository
         {
             "datainicio" => query.OrderBy(a => a.DataInicio),
             "datafim" => query.OrderBy(a => a.DataFim),
-            "valorpremio" => query.OrderBy(a => a.ValorPremio),
-            _ => query.OrderByDescending(a => a.DataInicio)
+            "valorpremio" => query.OrderBy(a => (double)a.ValorPremio),
+            _ => query.OrderByDescending(a => a.DataCriacao)
         };
 
         var total = await query.CountAsync(cancellationToken);
