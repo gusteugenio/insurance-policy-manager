@@ -9,5 +9,6 @@ public class ApoliceDto
   public decimal ValorPremio { get; set; }
   public DateTime DataInicio { get; set; }
   public DateTime DataFim { get; set; }
+  public DateTime DataCriacao { get; set; }
   public string Status { get; set; } = string.Empty;
 }

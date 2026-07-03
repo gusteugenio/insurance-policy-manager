@@ -135,6 +135,7 @@ public class ApoliceService : IApoliceService
     ValorPremio = apolice.ValorPremio,
     DataInicio = apolice.DataInicio,
     DataFim = apolice.DataFim,
+    DataCriacao = apolice.DataCriacao,
     Status = apolice.Status.ToString()
   };
 }

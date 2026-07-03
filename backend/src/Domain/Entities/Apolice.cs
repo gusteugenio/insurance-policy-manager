@@ -13,6 +13,7 @@ public class Apolice
   public decimal ValorPremio { get; private set; }
   public DateTime DataInicio { get; private set; }
   public DateTime DataFim { get; private set; }
+  public DateTime DataCriacao { get; private set; }
   public StatusApolice Status { get; private set; }
 
   protected Apolice() { } // uso exclusivo do EF Core
@@ -38,6 +39,7 @@ public class Apolice
     ValorPremio = valorPremio;
     DataInicio = dataInicio;
     DataFim = dataFim;
+    DataCriacao = DateTime.UtcNow;
     Status = StatusApolice.Ativa;
   }
 
