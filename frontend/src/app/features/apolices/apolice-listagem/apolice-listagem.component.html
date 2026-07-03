@@ -36,10 +36,10 @@
     <mat-form-field appearance="outline">
       <mat-label>Ordenar por</mat-label>
       <mat-select [(ngModel)]="ordenacaoSelecionada" [disabled]="vencendoEm30Dias" (selectionChange)="aoMudarFiltro()">
-        <mat-option [value]="null">Mais recentes </mat-option>
-        <mat-option value="datainicio">Data de ínicio</mat-option>
-        <mat-option value="datafim">Data de vencimento próximo</mat-option>
-        <mat-option value="valorpremio">Valor do prêmio</mat-option>
+        <mat-option [value]="null">Mais recentes (cadastro)</mat-option>
+        <mat-option value="datainicio">Data de início mais próxima</mat-option>
+        <mat-option value="datafim">Vencimento mais próximo</mat-option>
+        <mat-option value="valorpremio">Valor do prêmio (menor primeiro)</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -108,6 +108,7 @@
         <mat-paginator
           [length]="total"
           [pageSize]="tamanhoPagina"
+          [pageIndex]="pagina - 1"
           [pageSizeOptions]="[10, 25, 50]"
           (page)="aoMudarPagina($event)">
         </mat-paginator>
