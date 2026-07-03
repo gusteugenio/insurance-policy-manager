@@ -1,6 +1,7 @@
 <div class="apolice-form">
   <div class="apolice-form__header">
-    <h1 class="apolice-form__titulo">
+    <p class="page-eyebrow">Apólices</p>
+    <h1 class="page-title">
       {{ modoEdicao ? ('Editar apólice' + (numeroApolice ? ' ' + numeroApolice : '')) : 'Nova apólice' }}
     </h1>
   </div>
@@ -16,7 +17,7 @@
 
             <mat-form-field appearance="outline">
               <mat-label>CPF ou CNPJ</mat-label>
-              <input matInput formControlName="documentoCliente" placeholder="000.000.000-00" />
+              <input matInput formControlName="documentoCliente" placeholder="000.000.000-00" maxlength="18" (input)="aoDigitarDocumento($event)" />
               @if (form.get('documentoCliente')?.hasError('required') && form.get('documentoCliente')?.touched) {
                 <mat-error>Documento do cliente é obrigatório.</mat-error>
               }
@@ -28,6 +29,9 @@
             <mat-form-field appearance="outline">
               <mat-label>Nome do cliente</mat-label>
               <input matInput formControlName="nomeCliente" />
+              @if (clienteEncontrado) {
+                <mat-hint>Cliente já cadastrado. Nome bloqueado para edição.</mat-hint>
+              }
               @if (form.get('nomeCliente')?.hasError('required') && form.get('nomeCliente')?.touched) {
                 <mat-error>Nome do cliente é obrigatório.</mat-error>
               }

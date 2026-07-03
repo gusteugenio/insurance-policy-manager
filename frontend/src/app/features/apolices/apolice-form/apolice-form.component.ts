@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -7,14 +7,17 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { finalize } from 'rxjs';
+import { Subject, Subscription, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, finalize, map, switchMap } from 'rxjs/operators';
 
 import { ApoliceService } from '../../../core/services/apolice.service';
+import { ClienteService } from '../../../core/services/cliente.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import {
   dataInicioAntesDataFimValidator,
   documentoValidator,
+  formatarDocumento,
   placaValidator,
   valorPremioValidator
 } from '../../../shared/validators/apolice.validators';
@@ -36,18 +39,23 @@ import {
   templateUrl: './apolice-form.component.html',
   styleUrl: './apolice-form.component.scss'
 })
-export class ApoliceFormComponent implements OnInit {
+export class ApoliceFormComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   modoEdicao = false;
   apoliceId: string | null = null;
   numeroApolice: string | null = null;
+  clienteEncontrado = false;
 
   carregando = false;
   salvando = false;
 
+  private documentoSubject = new Subject<string>();
+  private documentoSubscription?: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private apoliceService: ApoliceService,
+    private clienteService: ClienteService,
     private notification: NotificationService,
     private route: ActivatedRoute,
     private router: Router
@@ -69,9 +77,48 @@ export class ApoliceFormComponent implements OnInit {
       { validators: dataInicioAntesDataFimValidator() }
     );
 
+    this.documentoSubscription = this.documentoSubject
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        switchMap((documento) => {
+          const digitos = documento.replace(/\D/g, '');
+          if (digitos.length !== 11 && digitos.length !== 14) {
+            return of(null);
+          }
+          return this.clienteService.obterPorDocumento(digitos).pipe(
+            map((resposta) => resposta.data),
+            catchError(() => of(null))
+          );
+        })
+      )
+      .subscribe((cliente) => {
+        const nomeControl = this.form.get('nomeCliente');
+        if (cliente) {
+          this.clienteEncontrado = true;
+          nomeControl?.setValue(cliente.nome);
+          nomeControl?.disable();
+        } else {
+          this.clienteEncontrado = false;
+          nomeControl?.enable();
+        }
+      });
+
     if (this.modoEdicao) {
       this.carregarApolice();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.documentoSubscription?.unsubscribe();
+  }
+
+  aoDigitarDocumento(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const formatado = formatarDocumento(input.value);
+    input.value = formatado;
+    this.form.get('documentoCliente')?.setValue(formatado, { emitEvent: false });
+    this.documentoSubject.next(formatado);
   }
 
   private carregarApolice(): void {
@@ -103,7 +150,7 @@ export class ApoliceFormComponent implements OnInit {
     }
 
     this.salvando = true;
-    const valores = this.form.value;
+    const valores = this.form.getRawValue();
 
     const payloadComum = {
       placa: valores.placa,

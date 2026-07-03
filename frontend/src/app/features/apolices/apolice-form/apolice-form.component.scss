@@ -5,14 +5,10 @@
     margin-bottom: 20px;
   }
 
-  &__titulo {
-    color: v.$color-secondary;
-    margin: 0;
-  }
-
   &__card {
     padding: 28px;
     max-width: 640px;
+    margin: 0 auto;
   }
 
   &__form {
