@@ -47,12 +47,13 @@ public class ApolicesController : ControllerBase
   }
 
   /// <summary>
-  /// Lista apólices cadastradas, com suporte a paginação, filtro por status e ordenação.
+  /// Lista apólices cadastradas, com suporte a paginação, filtro por status e cliente, e ordenação.
   /// </summary>
   /// <param name="pagina">Número da página (mínimo 1).</param>
   /// <param name="tamanhoPagina">Quantidade de itens por página (entre 1 e 100).</param>
   /// <param name="status">Filtro opcional por status: Ativa, Cancelada ou Expirada.</param>
-  /// <param name="ordenarPor">Campo de ordenação: dataFim ou valorPremio (padrão: dataInicio, decrescente).</param>
+  /// <param name="clienteId">Filtro opcional para listar apenas apólices de um cliente específico.</param>
+  /// <param name="ordenarPor">Campo de ordenação: dataInicio, dataFim ou valorPremio (padrão: dataInicio, decrescente).</param>
   /// <response code="200">Lista retornada com sucesso.</response>
   /// <response code="400">Parâmetros de paginação inválidos.</response>
   [HttpGet]
@@ -62,6 +63,7 @@ public class ApolicesController : ControllerBase
     [FromQuery] int pagina = 1,
     [FromQuery] int tamanhoPagina = 10,
     [FromQuery] string? status = null,
+    [FromQuery] Guid? clienteId = null,
     [FromQuery] string? ordenarPor = null,
     CancellationToken cancellationToken = default)
   {
@@ -76,7 +78,7 @@ public class ApolicesController : ControllerBase
     if (erros.Count > 0)
       return BadRequest(ApiResponse<object>.Fail("Erro de validação.", erros));
 
-    var resultado = await _apoliceService.ListarAsync(pagina, tamanhoPagina, status, ordenarPor, cancellationToken);
+    var resultado = await _apoliceService.ListarAsync(pagina, tamanhoPagina, status, clienteId, ordenarPor, cancellationToken);
     return Ok(ApiResponse<PagedResult<ApoliceDto>>.Ok(resultado));
   }
 

@@ -1,0 +1,85 @@
+@use '@angular/material' as mat;
+
+$mp-orange: (
+  50: #fef3ee,
+  100: #fbe0d4,
+  200: #f8c1a8,
+  300: #f4a17d,
+  400: #f18251,
+  500: #ed6326,
+  600: #d55922,
+  700: #be4f1e,
+  800: #a6451b,
+  900: #8e3b17,
+  A100: #f6b192,
+  A200: #f29267,
+  A400: #e15e24,
+  A700: #c95420,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: white,
+    A400: white,
+    A700: white,
+  )
+);
+
+$mp-slate: (
+  50: #eeeff0,
+  100: #d5d8d9,
+  200: #aab0b3,
+  300: #80898e,
+  400: #556168,
+  500: #2b3a42,
+  600: #27343b,
+  700: #222e35,
+  800: #1e292e,
+  900: #1a2328,
+  A100: #959ca0,
+  A200: #6b757b,
+  A400: #29373f,
+  A700: #253138,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: white,
+    A400: white,
+    A700: white,
+  )
+);
+
+$mp-primary: mat.m2-define-palette($mp-orange, 500, 300, 700);
+$mp-accent: mat.m2-define-palette($mp-slate, 700, 400, 900);
+$mp-warn: mat.m2-define-palette(mat.$m2-red-palette, 700);
+
+$mp-typography: mat.m2-define-typography-config(
+  $font-family: 'Inter, Roboto, "Helvetica Neue", sans-serif'
+);
+
+$mp-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $mp-primary,
+    accent: $mp-accent,
+    warn: $mp-warn,
+  ),
+  typography: $mp-typography,
+  density: 0,
+));

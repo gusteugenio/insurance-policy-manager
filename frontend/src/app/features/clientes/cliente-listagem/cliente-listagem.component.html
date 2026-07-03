@@ -1,0 +1,53 @@
+<div class="cliente-listagem">
+  <div class="cliente-listagem__header">
+    <p class="page-eyebrow">Gestão de seguros</p>
+    <h1 class="page-title">Clientes</h1>
+    <p class="page-subtitle">Clientes com apólices cadastradas</p>
+  </div>
+
+  <div class="card-elevated">
+    @if (carregando) {
+      <app-loading-spinner></app-loading-spinner>
+    } @else if (clientes.length === 0) {
+      <div class="empty-state">
+        <mat-icon>people_outline</mat-icon>
+        <p>Nenhum cliente encontrado.</p>
+        <span>Os clientes aparecem aqui assim que uma apólice é cadastrada.</span>
+      </div>
+    } @else {
+      <div class="cliente-listagem__tabela-wrapper">
+        <table mat-table [dataSource]="clientes" class="cliente-listagem__tabela">
+          <ng-container matColumnDef="nome">
+            <th mat-header-cell *matHeaderCellDef>Nome</th>
+            <td mat-cell *matCellDef="let cliente">{{ cliente.nome }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="documento">
+            <th mat-header-cell *matHeaderCellDef>CPF/CNPJ</th>
+            <td mat-cell *matCellDef="let cliente">{{ formatarDocumento(cliente.documento) }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="acoes">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let cliente">
+              <button mat-button color="primary" (click)="verApolices(cliente)">
+                Ver apólices
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="colunas"></tr>
+          <tr mat-row *matRowDef="let row; columns: colunas;"></tr>
+        </table>
+      </div>
+
+      <mat-paginator
+        [length]="total"
+        [pageSize]="tamanhoPagina"
+        [pageIndex]="pagina - 1"
+        [pageSizeOptions]="[10, 25, 50]"
+        (page)="aoMudarPagina($event)">
+      </mat-paginator>
+    }
+  </div>
+</div>

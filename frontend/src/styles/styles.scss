@@ -1,0 +1,112 @@
+@use '@angular/material' as mat;
+@use './theme' as theme;
+@use './variables' as v;
+
+@include mat.core();
+@include mat.all-component-themes(theme.$mp-theme);
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: v.$font-family-base;
+  background-color: v.$color-surface;
+  color: v.$color-text-primary;
+}
+
+.page-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 12px;
+  font-weight: 700;
+  color: v.$color-primary;
+  margin: 0 0 6px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: v.$color-secondary;
+  margin: 0;
+}
+
+.page-subtitle {
+  color: v.$color-text-secondary;
+  margin: 6px 0 0;
+  font-size: 14px;
+}
+
+.card-elevated {
+  background: v.$color-background;
+  border-radius: v.$radius-md;
+  box-shadow: v.$shadow-card;
+  border: 1px solid v.$color-border;
+}
+
+.status-chip {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+
+  &.status-ativa {
+    background: #e6f4ea;
+    color: v.$color-success;
+  }
+
+  &.status-cancelada {
+    background: #fdeceb;
+    color: v.$color-danger;
+  }
+
+  &.status-expirada {
+    background: #f1f1f1;
+    color: v.$color-text-secondary;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 24px;
+  color: v.$color-text-secondary;
+  text-align: center;
+
+  mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: v.$color-primary-light;
+    margin-bottom: 12px;
+  }
+
+  p {
+    margin: 0;
+    font-weight: 600;
+    color: v.$color-secondary;
+  }
+
+  span {
+    font-size: 13px;
+    margin-top: 4px;
+  }
+}
+
+.snackbar-sucesso {
+  --mdc-snackbar-container-color: #{v.$color-success};
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}

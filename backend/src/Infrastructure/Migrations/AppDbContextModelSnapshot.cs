@@ -26,6 +26,9 @@ namespace InsurancePolicyManager.Infrastructure.Migrations
                     b.Property<Guid>("ClienteId")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("DataFim")
                         .HasColumnType("TEXT");
 

@@ -154,4 +154,34 @@ public class ApoliceServiceTests
 
     await Assert.ThrowsAsync<DomainException>(() => _service.CancelarAsync(Guid.NewGuid()));
   }
+
+  [Fact]
+  public async Task ListarAsync_ComClienteIdInformado_DevePassarFiltroParaORepositorio()
+  {
+    var clienteId = Guid.NewGuid();
+
+    _apoliceRepositoryMock
+      .Setup(x => x.ListarAsync(1, 10, null, clienteId, null, It.IsAny<CancellationToken>()))
+      .ReturnsAsync((new List<Apolice>(), 0));
+
+    await _service.ListarAsync(1, 10, null, clienteId, null);
+
+    _apoliceRepositoryMock.Verify(
+      x => x.ListarAsync(1, 10, null, clienteId, null, It.IsAny<CancellationToken>()),
+      Times.Once);
+  }
+
+  [Fact]
+  public async Task ListarAsync_SemClienteIdInformado_DevePassarNullParaORepositorio()
+  {
+    _apoliceRepositoryMock
+      .Setup(x => x.ListarAsync(1, 10, null, null, null, It.IsAny<CancellationToken>()))
+      .ReturnsAsync((new List<Apolice>(), 0));
+
+    await _service.ListarAsync(1, 10, null, null, null);
+
+    _apoliceRepositoryMock.Verify(
+      x => x.ListarAsync(1, 10, null, null, null, It.IsAny<CancellationToken>()),
+      Times.Once);
+  }
 }

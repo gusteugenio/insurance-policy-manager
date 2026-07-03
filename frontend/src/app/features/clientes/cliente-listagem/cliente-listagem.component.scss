@@ -1,0 +1,28 @@
+@use '../../../../styles/variables' as v;
+
+.cliente-listagem {
+  &__header {
+    margin-bottom: 20px;
+  }
+
+  &__tabela-wrapper {
+    overflow-x: auto;
+  }
+
+  &__tabela {
+    width: 100%;
+
+    th {
+      color: v.$color-secondary;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: v.$color-surface;
+    }
+
+    td {
+      color: v.$color-text-primary;
+      font-size: 14px;
+    }
+  }
+}

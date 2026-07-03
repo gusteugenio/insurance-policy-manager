@@ -49,6 +49,17 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHostedService<ExpirarApolicesJob>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -68,6 +79,8 @@ using (var scope = app.Services.CreateScope())
 
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 

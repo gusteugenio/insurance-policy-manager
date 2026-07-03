@@ -1,0 +1,22 @@
+<mat-toolbar class="toolbar">
+  <a class="toolbar__brand" routerLink="/apolices">
+    <span class="toolbar__brand-mark">
+      <mat-icon>shield</mat-icon>
+    </span>
+    <span class="toolbar__brand-text">Insurance Policy Manager</span>
+  </a>
+
+  <span class="toolbar__spacer"></span>
+
+  <nav class="toolbar__nav">
+    <a mat-button routerLink="/apolices" routerLinkActive="toolbar__link--active">
+      <mat-icon>description</mat-icon>
+      Apólices
+    </a>
+
+    <a mat-button routerLink="/clientes" routerLinkActive="toolbar__link--active">
+      <mat-icon>people</mat-icon>
+      Clientes
+    </a>
+  </nav>
+</mat-toolbar>

@@ -1,0 +1,69 @@
+<div class="apolice-detalhe">
+  @if (carregando) {
+    <app-loading-spinner></app-loading-spinner>
+  } @else if (apolice) {
+    <div class="apolice-detalhe__header">
+      <div>
+        <button mat-button routerLink="/apolices">
+          <mat-icon>arrow_back</mat-icon>
+          Voltar
+        </button>
+        <p class="page-eyebrow">Apólices</p>
+        <h1 class="page-title apolice-detalhe__titulo">
+          Apólice {{ apolice.numero }}
+          <span class="status-chip" [ngClass]="'status-' + apolice.status.toLowerCase()">{{ apolice.status }}</span>
+        </h1>
+      </div>
+
+      <div class="apolice-detalhe__acoes">
+        @if (apolice.status === 'Ativa') {
+          <button mat-stroked-button [routerLink]="['/apolices', apolice.id, 'editar']" [disabled]="processando">
+            <mat-icon>edit</mat-icon>
+            Editar
+          </button>
+          <button mat-stroked-button color="warn" (click)="cancelarApolice()" [disabled]="processando">
+            <mat-icon>block</mat-icon>
+            Cancelar apólice
+          </button>
+        }
+        <button mat-stroked-button color="warn" (click)="removerApolice()" [disabled]="processando">
+          <mat-icon>delete</mat-icon>
+          Remover
+        </button>
+      </div>
+    </div>
+
+    <div class="apolice-detalhe__grid">
+      <div class="card-elevated apolice-detalhe__card">
+        <h2 class="apolice-detalhe__subtitulo">Dados da apólice</h2>
+        <dl class="apolice-detalhe__lista">
+          <dt>Placa</dt>
+          <dd>{{ apolice.placa }}</dd>
+
+          <dt>Valor do prêmio</dt>
+          <dd>{{ apolice.valorPremio | currency:'BRL' }}</dd>
+
+          <dt>Vigência</dt>
+          <dd>{{ apolice.dataInicio | date:'dd/MM/yyyy' }} até {{ apolice.dataFim | date:'dd/MM/yyyy' }}</dd>
+
+          <dt>Status</dt>
+          <dd>{{ apolice.status }}</dd>
+        </dl>
+      </div>
+
+      <div class="card-elevated apolice-detalhe__card">
+        <h2 class="apolice-detalhe__subtitulo">Cliente</h2>
+        <dl class="apolice-detalhe__lista">
+          <dt>Nome</dt>
+          <dd>{{ apolice.cliente.nome }}</dd>
+
+          <dt>CPF/CNPJ</dt>
+          <dd>{{ formatarDocumento(apolice.cliente.documento) }}</dd>
+        </dl>
+        <button mat-button color="primary" (click)="verApolicesDoCliente()">
+          Ver todas as apólices deste cliente
+        </button>
+      </div>
+    </div>
+  }
+</div>

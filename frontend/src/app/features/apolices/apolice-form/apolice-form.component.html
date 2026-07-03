@@ -1,0 +1,108 @@
+<div class="apolice-form">
+  <div class="apolice-form__header">
+    <p class="page-eyebrow">Apólices</p>
+    <h1 class="page-title">
+      {{ modoEdicao ? ('Editar apólice' + (numeroApolice ? ' ' + numeroApolice : '')) : 'Nova apólice' }}
+    </h1>
+  </div>
+
+  <div class="card-elevated apolice-form__card">
+    @if (carregando) {
+      <app-loading-spinner></app-loading-spinner>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="salvar()" class="apolice-form__form">
+        @if (!modoEdicao) {
+          <div class="apolice-form__secao">
+            <h2 class="apolice-form__subtitulo">Cliente</h2>
+
+            <mat-form-field appearance="outline">
+              <mat-label>CPF ou CNPJ</mat-label>
+              <input matInput formControlName="documentoCliente" placeholder="000.000.000-00" maxlength="18" (input)="aoDigitarDocumento($event)" />
+              @if (form.get('documentoCliente')?.hasError('required') && form.get('documentoCliente')?.touched) {
+                <mat-error>Documento do cliente é obrigatório.</mat-error>
+              }
+              @if (form.get('documentoCliente')?.hasError('documentoInvalido') && form.get('documentoCliente')?.touched) {
+                <mat-error>CPF ou CNPJ inválido.</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Nome do cliente</mat-label>
+              <input matInput formControlName="nomeCliente" />
+              @if (clienteEncontrado) {
+                <mat-hint>Cliente já cadastrado. Nome bloqueado para edição.</mat-hint>
+              }
+              @if (form.get('nomeCliente')?.hasError('required') && form.get('nomeCliente')?.touched) {
+                <mat-error>Nome do cliente é obrigatório.</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        }
+
+        <div class="apolice-form__secao">
+          <h2 class="apolice-form__subtitulo">Dados da apólice</h2>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Placa</mat-label>
+            <input matInput formControlName="placa" placeholder="ABC1234 ou ABC1D23" maxlength="7" />
+            @if (form.get('placa')?.hasError('required') && form.get('placa')?.touched) {
+              <mat-error>Placa é obrigatória.</mat-error>
+            }
+            @if (form.get('placa')?.hasError('placaInvalida') && form.get('placa')?.touched) {
+              <mat-error>Placa inválida. Utilize o padrão antigo (ABC1234) ou Mercosul (ABC1D23).</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Valor do prêmio</mat-label>
+            <input matInput type="number" step="0.01" formControlName="valorPremio" />
+            <span matTextPrefix>R$&nbsp;</span>
+            @if (form.get('valorPremio')?.hasError('required') && form.get('valorPremio')?.touched) {
+              <mat-error>Valor do prêmio é obrigatório.</mat-error>
+            }
+            @if (form.get('valorPremio')?.hasError('valorPremioInvalido') && form.get('valorPremio')?.touched) {
+              <mat-error>Valor do prêmio deve ser maior que zero.</mat-error>
+            }
+          </mat-form-field>
+
+          <div class="apolice-form__datas">
+            <mat-form-field appearance="outline">
+              <mat-label>Data de início</mat-label>
+              <input matInput [matDatepicker]="pickerInicio" formControlName="dataInicio" />
+              <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+              <mat-datepicker #pickerInicio></mat-datepicker>
+              @if (form.get('dataInicio')?.hasError('required') && form.get('dataInicio')?.touched) {
+                <mat-error>Data de início é obrigatória.</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Data de término</mat-label>
+              <input matInput [matDatepicker]="pickerFim" formControlName="dataFim" />
+              <mat-datepicker-toggle matIconSuffix [for]="pickerFim"></mat-datepicker-toggle>
+              <mat-datepicker #pickerFim></mat-datepicker>
+              @if (form.get('dataFim')?.hasError('required') && form.get('dataFim')?.touched) {
+                <mat-error>Data de término é obrigatória.</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          @if (form.hasError('dataInicioAposDataFim') && (form.get('dataInicio')?.touched || form.get('dataFim')?.touched)) {
+            <p class="apolice-form__erro-geral">Data de início deve ser anterior à data de término.</p>
+          }
+        </div>
+
+        <div class="apolice-form__acoes">
+          <button mat-button type="button" (click)="cancelar()" [disabled]="salvando">Cancelar</button>
+          <button mat-flat-button color="primary" type="submit" [disabled]="salvando">
+            @if (salvando) {
+              <span>Salvando...</span>
+            } @else {
+              <span>{{ modoEdicao ? 'Salvar alterações' : 'Cadastrar apólice' }}</span>
+            }
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</div>
