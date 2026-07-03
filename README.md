@@ -118,6 +118,7 @@ insurance-policy-manager/
 │           ├── core/
 │           ├── features/
 │           │   └── apolices/
+│           |   └── clientes/
 │           └── shared/
 ├── media/
 ├── docs/
@@ -239,10 +240,6 @@ Após a inicialização:
 
 > O frontend também é buildado dentro do container: `npm ci` e `npm run build` acontecem automaticamente ao rodar `docker compose up`, sem necessidade de Node.js instalado na máquina.
 
-### Executando sem Docker (opcional)
-
-<!-- Placeholder: instruções de execução manual do backend (dotnet run) e do frontend (ng serve) -->
-
 ---
 
 ## Endpoints da API
@@ -274,8 +271,6 @@ Após a inicialização:
 
 A documentação completa e interativa de todos os endpoints está disponível via Swagger em `/swagger` após a execução do projeto.
 
-<!-- Placeholder: revisar rotas finais conforme implementação -->
-
 ---
 
 ## Testes
@@ -294,9 +289,6 @@ O projeto conta com testes unitários focados nas regras de negócio, priorizand
 cd backend
 dotnet test
 ```
-
-<!-- Placeholder: adicionar instruções de execução dos testes do frontend -->
-
 Os testes também são executados automaticamente a cada push através do pipeline de CI/CD configurado no GitHub Actions, garantindo que alterações não quebrem regras de negócio já validadas.
 
 ---
@@ -364,6 +356,7 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 
 ### Frontend
 - [x] Tela de listagem de apólices (com filtro por status e clienteId, ordenação por data de início/término/valor, mais novas primeiro por padrão)
+- [x] Opção para visualizar apólices vencendo em 30 dias (padrão) na tela de listagem
 - [x] Tela de cadastro/edição de apólice
 - [x] Tela de detalhe de apólice
 - [x] Tela de listagem de clientes
