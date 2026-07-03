@@ -19,6 +19,7 @@ Sistema de gestão de apólices de seguro automóvel, com backend em .NET, persi
 - [Decisões técnicas](#decisões-técnicas)
 - [Como executar](#como-executar)
 - [Endpoints da API](#endpoints-da-api)
+- [Filtros e ordenação](#filtros-e-ordenação)
 - [Testes](#testes)
 - [Documentação adicional](#documentação-adicional)
 - [Checklist de desenvolvimento](#checklist-de-desenvolvimento)
@@ -152,6 +153,7 @@ erDiagram
         decimal ValorPremio
         DateTime DataInicio
         DateTime DataFim
+        DateTime DataCriacao
         string Status
     }
 ```
@@ -175,6 +177,7 @@ erDiagram
 | ValorPremio   | decimal   | Valor mensal pago pelo cliente               |
 | DataInicio    | DateTime  | Início da vigência                           |
 | DataFim       | DateTime  | Término da vigência                          |
+| DataCriacao   | DateTime  | Preenchida automaticamente no cadastro       |
 | Status        | enum      | `Ativa`, `Cancelada`, `Expirada`             |
 
 **Índices**
@@ -183,7 +186,7 @@ Para otimizar as consultas mais frequentes, estão previstos índices na tabela 
 
 - `Status` - utilizado nos filtros de listagem;
 - `DataFim` - utilizado na consulta de apólices vencendo em 30 dias;
-- `ClienteId` (documento do segurado) - utilizado na busca de apólices por cliente.
+- `ClienteId` - utilizado no filtro de apólices por cliente.
 
 ---
 
@@ -207,9 +210,9 @@ Para otimizar as consultas mais frequentes, estão previstos índices na tabela 
 - **Padronização de respostas**: todas as respostas seguem a estrutura `success`, `data`/`message`, evitando formatos divergentes entre endpoints.
 - **Correlation ID**: cada requisição recebe um identificador único, propagado nos logs, o que facilita o rastreamento de um fluxo específico durante a depuração.
 - **Geração do número da apólice e transição de status**: implementadas como regra de negócio na camada `Application`/`Domain`, e não na camada de apresentação, para permitir testes isolados dessas regras.
-- **Nomenclatura de endpoints de filtro**: a consulta de apólices próximas do vencimento usa um sub-recurso com query parameter (`/api/apolices/vencimento-proximo?dias=30`) em vez de um valor fixo no path, mantendo a rota alinhada às convenções REST e o período configurável.
 - **Persistência via volume Docker**: como o SQLite é um banco baseado em arquivo (não um processo cliente-servidor), ele não aparece como um serviço próprio no `docker-compose.yml`. Em vez disso, o arquivo `.db` é persistido através de um volume Docker montado no container da Api, evitando perda de dados entre reinicializações.
 - **Job de expiração em background**: a transição de status `Ativa → Expirada` não depende de o usuário acessar o sistema; um `BackgroundService` verifica periodicamente as apólices vencidas e atualiza o status automaticamente, mantendo o dado sempre consistente com a data corrente.
+- **Ordenação por decimal no SQLite**: o provider do EF Core para SQLite não oferece suporte nativo a `ORDER BY` em colunas `decimal`. A ordenação por valor do prêmio converte o valor para `double` no momento da consulta, contornando essa limitação sem alterar o tipo de armazenamento do campo.
 
 ---
 
@@ -246,22 +249,22 @@ Após a inicialização:
 
 **Apólices**
 
-| Método | Rota                                       | Descrição                                                              |
-|--------|----------------------------------------------|----------------------------------------------------------------------------|
-| GET    | `/api/apolices`                              | Lista apólices (paginação, filtro por status, clienteId e dataInicio)       |
-| GET    | `/api/apolices/{id}`                         | Consulta apólice por Id                                                     |
-| POST   | `/api/apolices`                              | Cadastra nova apólice (cria o cliente automaticamente, se necessário)       |
-| PUT    | `/api/apolices/{id}`                         | Atualiza apólice existente                                                  |
-| DELETE | `/api/apolices/{id}`                         | Remove apólice                                                              |
-| GET    | `/api/apolices/vencimento-proximo?dias=30`   | Lista apólices que vencem no período informado (padrão: 30 dias)            |
-| PATCH  | `/api/apolices/{id}/cancelar`                | Cancela uma apólice ativa                                                   |
+| Método | Rota                                         | Descrição                                                                                    |
+|--------|----------------------------------------------|----------------------------------------------------------------------------------------------|
+| GET    | `/api/apolices`                              | Lista apólices (filtros por status e clienteId; ordenação - ver seção "Filtros e ordenação") |
+| GET    | `/api/apolices/{id}`                         | Consulta apólice por Id                                                                      |
+| POST   | `/api/apolices`                              | Cadastra nova apólice (cria o cliente automaticamente, se necessário)                        |
+| PUT    | `/api/apolices/{id}`                         | Atualiza apólice existente                                                                   |
+| DELETE | `/api/apolices/{id}`                         | Remove apólice                                                                               |
+| GET    | `/api/apolices/vencimento-proximo?dias=30`   | Lista apólices que vencem no período informado (padrão: 30 dias)                             |
+| PATCH  | `/api/apolices/{id}/cancelar`                | Cancela uma apólice ativa                                                                    |
 
 **Clientes**
 
-| Método | Rota                                | Descrição                            |
-|--------|-------------------------------------|-----------------------------------------|
-| GET    | `/api/clientes`                     | Lista clientes cadastrados (com paginação)           |
-| GET    | `/api/clientes/{documento}`         | Consulta cliente por CPF/CNPJ           |
+| Método | Rota                                | Descrição                                  |
+|--------|-------------------------------------|--------------------------------------------|
+| GET    | `/api/clientes`                     | Lista clientes cadastrados (com paginação) |
+| GET    | `/api/clientes/{documento}`         | Consulta cliente por CPF/CNPJ              |
 
 **Infraestrutura**
 
@@ -270,6 +273,35 @@ Após a inicialização:
 | GET    | `/health` | Verifica status da API       |
 
 A documentação completa e interativa de todos os endpoints está disponível via Swagger em `/swagger` após a execução do projeto.
+
+---
+
+## Filtros e ordenação
+
+A listagem de apólices (`GET /api/apolices`) aceita os seguintes parâmetros opcionais:
+
+| Parâmetro | Tipo | Descrição |
+|-----------|------|-----------|
+| `status` | `string` | Filtra por `Ativa`, `Cancelada` ou `Expirada`. |
+| `clienteId` | `Guid` | Filtra apólices de um cliente específico. |
+| `ordenarPor` | `string` | Define o critério de ordenação (veja a tabela abaixo). |
+
+### Critérios de ordenação (`ordenarPor`)
+
+| Valor | Ordenação aplicada |
+|-------|---------------------|
+| *(não informado)* | Mais recentes primeiro, com base na data de cadastro (`DataCriacao`) *(padrão)*. |
+| `datainicio` | Data de início mais próxima primeiro (ordem crescente). |
+| `datafim` | Data de término mais próxima primeiro (ordem crescente). |
+| `valorpremio` | Menor valor de prêmio primeiro (ordem crescente). |
+
+> A ordenação padrão utiliza `DataCriacao`, preenchida automaticamente no momento do cadastro, e não `DataInicio`. Isso diferencia uma apólice recém-cadastrada de uma apólice cuja vigência começa em breve, que representam conceitos distintos.
+
+### Consulta de vencimentos próximos
+
+O endpoint `GET /api/apolices/vencimento-proximo` aceita o parâmetro opcional `dias`, que define o período de antecedência da consulta. O valor padrão é `30`.
+
+No frontend, esse parâmetro é mantido fixo em **30 dias**, seguindo a mesma regra de negócio utilizada para o acompanhamento de vencimentos. Isso garante consistência entre a interface e a documentação da API, enquanto consumidores externos continuam podendo informar qualquer período desejado.
 
 ---
 
@@ -355,8 +387,8 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 - [x] Testes do job de expiração
 
 ### Frontend
-- [x] Tela de listagem de apólices (com filtro por status e clienteId, ordenação por data de início/término/valor, mais novas primeiro por padrão)
-- [x] Opção para visualizar apólices vencendo em 30 dias (padrão) na tela de listagem
+- [x] Tela de listagem de apólices (com filtro por status e clienteId; ordenação por data de cadastro, data de início, vencimento ou valor do prêmio)
+- [x] Opção para visualizar apólices vencendo em 30 dias via toggle na listagem (período fixo no frontend, consistente com a regra de negócio)
 - [x] Tela de cadastro/edição de apólice
 - [x] Tela de detalhe de apólice
 - [x] Tela de listagem de clientes
@@ -373,6 +405,3 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 - [ ] README completo
 - [ ] Deploy (opcional)
 
----
-
-<!-- Placeholder: seção de licença, caso aplicável -->
