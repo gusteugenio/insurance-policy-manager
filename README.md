@@ -8,6 +8,19 @@ Sistema de gestão de apólices de seguro automóvel, com backend em .NET, persi
 
 ---
 
+## 🚀 Aplicação em produção
+
+A aplicação está em produção e pode ser acessada pelos links abaixo:
+
+| Camada | Plataforma | URL |
+|---|---|---|
+| Frontend (Angular) | Vercel | https://insurance-policy-manager-gamma.vercel.app/ |
+| Backend (.NET) | Railway | https://insurance-policy-manager-production-5a9d.up.railway.app/ |
+
+> Acesse `https://insurance-policy-manager-production-5a9d.up.railway.app/swagger` para a documentação interativa da API (Swagger) em produção.
+
+---
+
 ## Índice
 
 - [Sobre o projeto](#sobre-o-projeto)
@@ -25,7 +38,6 @@ Sistema de gestão de apólices de seguro automóvel, com backend em .NET, persi
 - [Testes](#testes)
 - [Coleção Postman](#coleção-postman)
 - [Capturas de tela](#capturas-de-tela)
-- [Deploy](#deploy)
 - [Documentação adicional](#documentação-adicional)
 - [Checklist de desenvolvimento](#checklist-de-desenvolvimento)
 - [Contato](#contato)
@@ -442,16 +454,6 @@ Para usar: no Postman, `File > Import`, selecione o arquivo e ajuste a variável
 
 ---
 
-## Deploy
-
-| Camada | Plataforma | URL |
-|---|---|---|
-| Backend (.NET) | Railway | https://insurance-policy-manager-production-5a9d.up.railway.app/ |
-| Frontend (Angular) | Vercel | *(preencher após o deploy)* |
-
-> Acesse `https://insurance-policy-manager-production-5a9d.up.railway.app/swagger` para acessar o Swagger em produção.
----
-
 ## Documentação adicional
 
 Além deste README, o projeto conta com documentação complementar:
@@ -533,7 +535,7 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 - [x] Diagrama de arquitetura, modelo de dados e transição de status (Mermaid, em `docs/diagrams/`)
 - [x] README completo
 - [x] Coleção Postman (`postman/`)
-- [ ] Deploy
+- [x] Deploy
 
 ---
 
