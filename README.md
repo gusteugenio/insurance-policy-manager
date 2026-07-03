@@ -363,21 +363,21 @@ A seguir, um checklist organizado por blocos de trabalho, utilizado como referê
 - [x] Testes do job de expiração
 
 ### Frontend
-- [ ] Tela de listagem de apólices (com filtros de status, clienteId e dataInicio)
-- [ ] Tela de cadastro/edição de apólice
-- [ ] Tela de detalhe de apólice
-- [ ] Tela de listagem de clientes
-- [ ] Navegação de "cliente" para "apólices daquele cliente" (reaproveitando a listagem de apólices com filtro de clienteId)
-- [ ] Interceptors (tratamento de erro e URL base da API)
-- [ ] Feedback visual (loading, toasts)
-- [ ] Validação de formulário espelhando o backend
+- [x] Tela de listagem de apólices (com filtro por status e clienteId, ordenação por data de início/término/valor, mais novas primeiro por padrão)
+- [x] Tela de cadastro/edição de apólice
+- [x] Tela de detalhe de apólice
+- [x] Tela de listagem de clientes
+- [x] Navegação de "cliente" para "apólices daquele cliente" (reaproveitando a listagem de apólices com filtro de clienteId)
+- [x] Interceptors (tratamento de erro e URL base da API)
+- [x] Feedback visual (loading, toasts)
+- [x] Validação de formulário espelhando o backend
 
 ### DevOps e documentação
 - [ ] Pipeline de CI/CD no GitHub Actions (restore, build, testes)
-- [ ] README completo
 - [ ] `docs/fluxo.md` e `docs/regras-de-negocio.md`
 - [ ] Prints do fluxo em `media/`
 - [ ] Diagrama de arquitetura e diagrama ER
+- [ ] README completo
 - [ ] Deploy (opcional)
 
 ---
