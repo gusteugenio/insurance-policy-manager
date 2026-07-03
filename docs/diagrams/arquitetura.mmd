@@ -1,0 +1,6 @@
+flowchart TD
+  F[Frontend Angular] --> A[Api: Controllers e Middlewares]
+  A --> AP[Application: Services, DTOs, Validators]
+  AP --> D[Domain: Entidades e Regras]
+  AP --> I[Infrastructure: EF Core, Repositórios]
+  I --> DB[(SQLite)]

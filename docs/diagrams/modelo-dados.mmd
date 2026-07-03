@@ -1,0 +1,20 @@
+erDiagram
+    CLIENTE ||--o{ APOLICE : possui
+
+    CLIENTE {
+        Guid Id
+        string Documento
+        string Nome
+    }
+
+    APOLICE {
+        Guid Id
+        string Numero
+        Guid ClienteId
+        string Placa
+        decimal ValorPremio
+        DateTime DataInicio
+        DateTime DataFim
+        DateTime DataCriacao
+        string Status
+    }
