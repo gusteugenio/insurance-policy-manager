@@ -6,7 +6,7 @@
   },
   "variable": [
     { "key": "base_url", "value": "http://localhost:5000", "type": "string" },
-    { "key": "base_url_prod", "value": "https://SEU-BACKEND.up.railway.app", "type": "string" },
+    { "key": "base_url_prod", "value": "https://insurance-policy-manager-production-5a9d.up.railway.app/", "type": "string" },
     { "key": "apoliceId", "value": "", "type": "string" },
     { "key": "documento", "value": "", "type": "string" }
   ],

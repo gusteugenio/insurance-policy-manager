@@ -446,9 +446,10 @@ Para usar: no Postman, `File > Import`, selecione o arquivo e ajuste a variável
 
 | Camada | Plataforma | URL |
 |---|---|---|
-| Backend (.NET) | Railway | *(preencher após o deploy)* |
+| Backend (.NET) | Railway | https://insurance-policy-manager-production-5a9d.up.railway.app/ |
 | Frontend (Angular) | Render | *(preencher após o deploy)* |
 
+> Acesse `https://insurance-policy-manager-production-5a9d.up.railway.app/swagger` para acessar o Swagger em produção.
 ---
 
 ## Documentação adicional
