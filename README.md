@@ -87,7 +87,7 @@ Além do CRUD principal, a aplicação disponibiliza uma consulta dedicada para 
 ![Docker Compose](https://img.shields.io/badge/Docker%20Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
 ![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)
-![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
 ---
 
@@ -447,7 +447,7 @@ Para usar: no Postman, `File > Import`, selecione o arquivo e ajuste a variável
 | Camada | Plataforma | URL |
 |---|---|---|
 | Backend (.NET) | Railway | https://insurance-policy-manager-production-5a9d.up.railway.app/ |
-| Frontend (Angular) | Render | *(preencher após o deploy)* |
+| Frontend (Angular) | Vercel | *(preencher após o deploy)* |
 
 > Acesse `https://insurance-policy-manager-production-5a9d.up.railway.app/swagger` para acessar o Swagger em produção.
 ---
