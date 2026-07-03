@@ -4,8 +4,10 @@
   &__header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
   }
 
   &__titulo {
@@ -13,16 +15,31 @@
     margin: 0;
   }
 
+  &__subtitulo {
+    color: v.$color-text-secondary;
+    margin: 4px 0 0;
+    font-size: 14px;
+  }
+
   &__filtro-ativo {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #fdece3;
+    background: v.$color-primary-soft;
     color: v.$color-primary-dark;
-    padding: 8px 16px;
+    padding: 10px 16px;
     border-radius: v.$radius-sm;
     margin-bottom: 16px;
     font-size: 14px;
+
+    mat-icon {
+      color: v.$color-primary-dark;
+    }
+
+    button {
+      margin-left: auto;
+      color: v.$color-primary-dark;
+    }
   }
 
   &__filtros {
@@ -30,17 +47,39 @@
     gap: 16px;
     margin-bottom: 16px;
     flex-wrap: wrap;
+
+    mat-form-field {
+      min-width: 220px;
+    }
+  }
+
+  &__tabela-wrapper {
+    overflow-x: auto;
   }
 
   &__tabela {
     width: 100%;
+
+    th {
+      color: v.$color-secondary;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: v.$color-surface;
+    }
+
+    td {
+      color: v.$color-text-primary;
+      font-size: 14px;
+    }
   }
 
   &__linha {
     cursor: pointer;
+    transition: background-color 0.15s ease;
 
     &:hover {
-      background: v.$color-surface;
+      background: v.$color-primary-soft;
     }
   }
 }

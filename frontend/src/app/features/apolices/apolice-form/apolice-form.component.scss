@@ -2,7 +2,7 @@
 
 .apolice-form {
   &__header {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
 
   &__titulo {
@@ -11,7 +11,7 @@
   }
 
   &__card {
-    padding: 24px;
+    padding: 28px;
     max-width: 640px;
   }
 
@@ -24,23 +24,33 @@
   &__secao {
     display: flex;
     flex-direction: column;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid v.$color-border;
+
+    &:last-of-type {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
   }
 
   &__subtitulo {
-    color: v.$color-secondary-light;
-    font-size: 14px;
+    color: v.$color-primary-dark;
+    font-size: 13px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin: 0 0 12px;
+    letter-spacing: 0.05em;
+    margin: 0 0 14px;
   }
 
   &__datas {
     display: flex;
     gap: 16px;
+    flex-wrap: wrap;
 
     mat-form-field {
       flex: 1;
+      min-width: 200px;
     }
   }
 
@@ -54,7 +64,7 @@
     display: flex;
     justify-content: flex-end;
     gap: 12px;
-    margin-top: 8px;
+    margin-top: 12px;
   }
 
   mat-form-field {

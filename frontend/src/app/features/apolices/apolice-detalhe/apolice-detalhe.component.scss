@@ -32,20 +32,26 @@
 
   &__card {
     padding: 24px;
+    transition: box-shadow 0.15s ease;
+
+    &:hover {
+      box-shadow: v.$shadow-card-hover;
+    }
   }
 
   &__subtitulo {
-    color: v.$color-secondary-light;
-    font-size: 14px;
+    color: v.$color-primary-dark;
+    font-size: 13px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
     margin: 0 0 16px;
   }
 
   &__lista {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 8px 16px;
+    gap: 10px 16px;
     margin: 0 0 16px;
 
     dt {
@@ -56,6 +62,7 @@
     dd {
       margin: 0;
       font-weight: 500;
+      color: v.$color-text-primary;
     }
   }
 }

@@ -3,26 +3,59 @@
 .toolbar {
   background: v.$color-primary;
   color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  padding: 0 24px;
+  gap: 8px;
 
   a {
-    color: #fff;
+    color: #ffffff;
     text-decoration: none;
   }
 
   mat-icon {
-    color: #fff;
+    color: #ffffff;
   }
 
   &__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__brand-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: v.$radius-sm;
+    background: rgba(255, 255, 255, 0.18);
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__brand-text {
     font-weight: 600;
     font-size: 18px;
+    letter-spacing: 0.01em;
   }
 
   &__spacer {
     flex: 1 1 auto;
   }
-}
 
-a {
-  color: #ffffff;
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__link--active {
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: v.$radius-sm;
+  }
 }
