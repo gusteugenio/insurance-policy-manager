@@ -44,6 +44,7 @@
       <mat-paginator
         [length]="total"
         [pageSize]="tamanhoPagina"
+        [pageIndex]="pagina - 1"
         [pageSizeOptions]="[10, 25, 50]"
         (page)="aoMudarPagina($event)">
       </mat-paginator>
